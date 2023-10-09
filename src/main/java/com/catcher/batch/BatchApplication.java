@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableBatchProcessing
 @EnableScheduling
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.catcher.batch.external")
 public class BatchApplication {
 
     public static void main(String[] args) {
