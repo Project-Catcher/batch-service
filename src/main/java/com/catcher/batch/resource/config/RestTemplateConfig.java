@@ -1,4 +1,4 @@
-package com.catcher.batch.config;
+package com.catcher.batch.resource.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
