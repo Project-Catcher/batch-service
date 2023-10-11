@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-    implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
+//    implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
 
     //영화API
@@ -42,7 +42,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
     testImplementation 'org.springframework.security:spring-security-test:6.0.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-
+// webclinet 설정
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // m1 netty 로컬 설정
+    implementation("io.netty:netty-resolver-dns-native-macos:4.1.75.Final:osx-aarch_64")
 }
 
 dependencyManagement {
