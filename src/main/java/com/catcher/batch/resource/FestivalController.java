@@ -1,6 +1,8 @@
 package com.catcher.batch.resource;
 
 import com.catcher.batch.core.dto.FestivalApiResponse;
+import com.catcher.batch.core.dto.MovieApiResponse;
+import com.catcher.batch.core.service.CatcherFeignService;
 import com.catcher.batch.core.service.CatcherJsonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 @RequestMapping("/festival")
 public class FestivalController {
     private final CatcherJsonService catcherJsonService;
+    private final CatcherFeignService catcherFeignService;
 
     @GetMapping("/webclient-batch")
     public Mono<ResponseEntity<FestivalApiResponse>> getMovieDataByWebClient(@RequestParam(defaultValue = "1") Integer page,
@@ -32,5 +35,17 @@ public class FestivalController {
         return stringMono
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/feign-batch")
+    public ResponseEntity<FestivalApiResponse> getMovieDataByFeign(@RequestParam(defaultValue = "1") Integer page,
+                                                                   @RequestParam(defaultValue = "5") Integer count) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("pageNo", page);
+        params.put("numOfRows", count);
+        params.put("type", "json");
+        FestivalApiResponse festivalApiResponse = catcherFeignService.parseService(params, FestivalApiResponse.class);
+
+        return ResponseEntity.ok(festivalApiResponse);
     }
 }

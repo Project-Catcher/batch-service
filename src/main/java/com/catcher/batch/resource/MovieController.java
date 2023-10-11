@@ -1,6 +1,7 @@
 package com.catcher.batch.resource;
 
 import com.catcher.batch.core.dto.MovieApiResponse;
+import com.catcher.batch.core.service.CatcherFeignService;
 import com.catcher.batch.core.service.CatcherJsonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 @RequestMapping("/movie")
 public class MovieController {
     private final CatcherJsonService catcherJsonService;
+    private final CatcherFeignService catcherFeignService;
+
 
     @GetMapping("/webclient-batch")
     public Mono<ResponseEntity<MovieApiResponse>> getMovieDataByWebClient() {
@@ -25,5 +28,13 @@ public class MovieController {
         return stringMono
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/feign-batch")
+    public ResponseEntity<MovieApiResponse> getMovieDataByFeign() {
+        HashMap<String, Object> params = new HashMap<>();
+        MovieApiResponse movieResponse = catcherFeignService.parseService(params, MovieApiResponse.class);
+
+        return ResponseEntity.ok(movieResponse);
     }
 }
