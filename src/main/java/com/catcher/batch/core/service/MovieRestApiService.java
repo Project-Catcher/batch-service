@@ -1,6 +1,7 @@
 package com.catcher.batch.core.service;
 
 import com.catcher.batch.config.RestTemplateConfig;
+import com.catcher.batch.core.converter.CatcherConverter;
 import com.catcher.batch.core.converter.JsonConverter;
 import com.catcher.batch.core.dto.MovieApiResponse;
 import com.catcher.batch.infrastructure.service.KmsService;
@@ -49,12 +50,14 @@ public class MovieRestApiService {
                 .encode()
                 .toUri();
 
-        ResponseEntity<HashMap> responseEntity = restTemplateConfig.restTemplate().getForEntity(apiUrl, HashMap.class);
-        HashMap<String, Object> map = (HashMap<String, Object>) responseEntity.getBody().get("boxOfficeResult");
-        List<MovieApiResponse.MovieItemDTO> movieItemDTOList = (List<MovieApiResponse.MovieItemDTO>) map.get("dailyBoxOfficeList");
-        MovieApiResponse response = new MovieApiResponse();
-        response.setResponse(movieItemDTOList);
+//        ResponseEntity<HashMap> responseEntity = restTemplateConfig.restTemplate().getForEntity(apiUrl, HashMap.class);
+//        HashMap<String, Object> map = (HashMap<String, Object>) responseEntity.getBody().get("boxOfficeResult");
+//        List<MovieApiResponse.MovieItemDTO> movieItemDTOList = (List<MovieApiResponse.MovieItemDTO>) map.get("dailyBoxOfficeList");
+//        MovieApiResponse response = new MovieApiResponse();
+//        response.setResponse(movieItemDTOList);
 
-        return response;
+        ResponseEntity<String> responseEntity = restTemplateConfig.restTemplate().getForEntity(apiUrl, String.class);
+        CatcherConverter<MovieApiResponse> movieConverter = new CatcherConverter<MovieApiResponse>(MovieApiResponse.class, "boxOfficeResult");
+        return movieConverter.parse(responseEntity.getBody());
     }
 }
