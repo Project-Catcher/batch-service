@@ -22,13 +22,33 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
+
+    //ssh
+    implementation 'com.jcraft:jsch:0.1.55'
+
+    //kms
+    implementation 'com.amazonaws:aws-java-sdk-kms:1.12.429'
+    implementation 'org.zalando:spring-cloud-config-aws-kms:5.1.2'
+    implementation 'com.amazonaws:aws-java-sdk-kms:1.12.429'
+    implementation 'com.amazonaws:jmespath-java:1.12.468'
+
+    implementation 'org.json:json:20230227'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:3.0.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+    testImplementation 'org.springframework.security:spring-security-test:6.0.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
+
+    // webclinet 설정
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // m1 netty 로컬 설정
+    implementation("io.netty:netty-resolver-dns-native-macos:4.1.75.Final:osx-aarch_64")
 }
 
 dependencyManagement {
