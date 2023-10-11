@@ -1,4 +1,4 @@
-package com.catcher.batch.infrastructure;
+package com.catcher.batch.resource;
 
 import com.catcher.batch.core.dto.MovieApiResponse;
 import com.catcher.batch.core.service.MovieWebClientApiService;
