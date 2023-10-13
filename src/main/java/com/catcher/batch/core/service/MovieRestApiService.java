@@ -1,7 +1,7 @@
 package com.catcher.batch.core.service;
 
 
-import com.catcher.batch.infrastructure.KmsUtils;
+import com.catcher.batch.infrastructure.utils.KmsUtils;
 import com.catcher.batch.resource.config.RestTemplateConfig;
 import com.catcher.batch.core.converter.CatcherConverter;
 import com.catcher.batch.core.dto.MovieApiResponse;
