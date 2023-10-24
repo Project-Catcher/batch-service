@@ -47,9 +47,16 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
     testImplementation 'org.springframework.security:spring-security-test:6.0.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
+
+
     // webclinet 설정
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation("io.netty:netty-resolver-dns-native-macos:4.1.75.Final:osx-aarch_64")
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.4'
+    // m1 netty 로컬 설정
+    implementation('io.netty:netty-resolver-dns-native-macos:4.1.90.Final:osx-aarch_64')
+
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
 }
 
 dependencyManagement {
