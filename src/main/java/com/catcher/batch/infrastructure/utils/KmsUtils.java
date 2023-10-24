@@ -42,7 +42,7 @@ public class KmsUtils {
 
             byte[] cipherBytes = kmsClient.encrypt(request).getCiphertextBlob().array();
             return Base64.encodeBase64String(cipherBytes);
-        } catch (Exception exception) {
+        } catch (AWSKMSException exception) {
             throw new ExternalException(ErrorCode.AWS_KMS_INVALID_ERROR.getStatus(), exception.getMessage());
         }
     }
