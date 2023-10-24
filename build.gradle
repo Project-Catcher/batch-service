@@ -29,6 +29,9 @@ dependencies {
     //ssh
     implementation 'com.jcraft:jsch:0.1.55'
 
+    //open feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     //kms
     implementation 'com.amazonaws:aws-java-sdk-kms:1.12.429'
     implementation 'org.zalando:spring-cloud-config-aws-kms:5.1.2'
