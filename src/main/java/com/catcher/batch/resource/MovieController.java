@@ -18,7 +18,7 @@ public class MovieController {
 
     @GetMapping("/batch")
     public CommonResponse<MovieApiResponse> movieData() {
-MovieApiResponse response = movieService.getMovieData();
+        MovieApiResponse response = movieService.getMovieData();
         return ApiUtils.success(200, response);
     }
 }
