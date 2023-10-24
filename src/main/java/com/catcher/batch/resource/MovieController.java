@@ -3,7 +3,6 @@ package com.catcher.batch.resource;
 import com.catcher.batch.common.response.CommonResponse;
 import com.catcher.batch.core.dto.MovieApiResponse;
 import com.catcher.batch.core.service.MovieService;
-import com.catcher.batch.common.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +18,6 @@ public class MovieController {
     @GetMapping("/batch")
     public CommonResponse<MovieApiResponse> movieData() {
         MovieApiResponse response = movieService.getMovieData();
-        return ApiUtils.success(200, response);
+        return CommonResponse.success(200, response);
     }
 }

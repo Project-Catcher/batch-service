@@ -18,4 +18,8 @@ public class CommonResponse<T> {
         this.success = success;
         this.result = result;
     }
+
+    public static <T> CommonResponse<T> success(int code, T result) {
+        return new CommonResponse<>(code, true, result);
+    }
 }
