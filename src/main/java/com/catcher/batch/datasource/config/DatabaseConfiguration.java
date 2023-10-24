@@ -69,7 +69,7 @@ public class DatabaseConfiguration {
         ); // TODO: lport 값(현재 0)은 추후 서버 올릴때는 지정해줘야함
 
         return DataSourceBuilder.create()
-                .url(KmsUtils.decrypt(databaseUrl))
+                .url(KmsUtils.decrypt(databaseUrl).replace(Integer.toString(localPort), Integer.toString(assignedPort)))
                 .username(KmsUtils.decrypt(databaseUsername))
                 .password(KmsUtils.decrypt(databasePassword))
                 .build();
