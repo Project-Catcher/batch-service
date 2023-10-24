@@ -1,22 +1,18 @@
 package com.catcher.batch.core.converter;
 
+import com.catcher.batch.annotation.CatcherJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
-public class CatcherConverter<T> {
-    private final String headerPath;
-    private final ObjectMapper objectMapper;
-    private final Class<T> responseType;
+@Component
+public class CatcherConverter {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public CatcherConverter(Class<T> responseType, String headerPath) {
-        this.responseType = responseType;
-        this.headerPath = headerPath;
-        objectMapper = new ObjectMapper();
-    }
-
-    public T parse(String jsonMessage) {
-        JSONObject jsonObject = getJsonObject(jsonMessage);
+    public <T> T parse(String jsonMessage, Class<T> responseType) {
+        String path = getPath(responseType);
+        JSONObject jsonObject = getJsonObject(jsonMessage, path);
 
         try {
             return objectMapper.readValue(jsonObject.toString(), responseType);
@@ -25,13 +21,22 @@ public class CatcherConverter<T> {
         }
     }
 
-    private JSONObject getJsonObject(String json) {
-        if(headerPath == null) {
+    private <T> String getPath(Class<T> responseType) {
+
+        CatcherJson annotation = responseType.getAnnotation(CatcherJson.class);
+        if(annotation == null) {
+            throw new IllegalStateException();
+        }
+        return annotation.path();
+    }
+
+    private JSONObject getJsonObject(String json, String jsonPath) {
+        if(jsonPath == null) {
             throw new IllegalStateException();
         }
 
         JSONObject jsonObject = new JSONObject(json);
-        String[] subPath = headerPath.split("\\.");
+        String[] subPath = jsonPath.split("\\.");
 
         for (String path : subPath) {
             jsonObject = jsonObject.getJSONObject(path);
