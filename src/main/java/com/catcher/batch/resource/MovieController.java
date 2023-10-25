@@ -1,8 +1,10 @@
 package com.catcher.batch.resource;
 
+import com.catcher.batch.common.response.CommonResponse;
 import com.catcher.batch.core.dto.MovieApiResponse;
-import com.catcher.batch.core.service.CatcherFeignService;
-import com.catcher.batch.core.service.CatcherJsonService;
+import com.catcher.batch.common.service.CatcherFeignService;
+import com.catcher.batch.common.service.CatcherJsonService;
+import com.catcher.batch.core.service.ApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,7 @@ import java.util.HashMap;
 public class MovieController {
     private final CatcherJsonService catcherJsonService;
     private final CatcherFeignService catcherFeignService;
-
+    private final ApiService apiService;
 
     @GetMapping("/webclient-batch")
     public Mono<ResponseEntity<MovieApiResponse>> getMovieDataByWebClient() {
@@ -31,10 +33,16 @@ public class MovieController {
     }
 
     @GetMapping("/feign-batch")
-    public ResponseEntity<MovieApiResponse> getMovieDataByFeign() {
+    public CommonResponse<MovieApiResponse> getMovieDataByFeign() {
         HashMap<String, Object> params = new HashMap<>();
         MovieApiResponse movieResponse = catcherFeignService.parseService(params, MovieApiResponse.class);
 
-        return ResponseEntity.ok(movieResponse);
+        return CommonResponse.success(200, movieResponse);
+    }
+
+    @GetMapping("/batch")
+    public CommonResponse<MovieApiResponse> movieData() {
+        MovieApiResponse response = (MovieApiResponse) apiService.getData();
+        return CommonResponse.success(200, response);
     }
 }

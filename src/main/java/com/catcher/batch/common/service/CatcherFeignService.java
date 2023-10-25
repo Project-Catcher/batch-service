@@ -1,13 +1,14 @@
-package com.catcher.batch.core.service;
+package com.catcher.batch.common.service;
 
 import com.catcher.batch.core.converter.CatcherConverter;
 import com.catcher.batch.core.properties.PropertyBase;
+import com.catcher.batch.resource.external.ExternalFeign;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -16,9 +17,10 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class CatcherJsonService {
+@Slf4j
+public class CatcherFeignService {
+    private final ExternalFeign externalFeign;
     private final CatcherConverter catcherConverter;
-    private final WebClient webClient;
     private final ApplicationContext applicationContext;
     private List<PropertyBase> properties;
 
@@ -32,17 +34,13 @@ public class CatcherJsonService {
         }
     }
 
-    public <T> Mono<T> parseService(Map<String, Object> params, Class<T> requestType) {
-        PropertyBase propertyBase = getProperty(requestType);
-        propertyBase.setParams(params);
+    @Async
+    public <T> T parseService(Map<String, Object> params, Class<T> requestType) {
+        PropertyBase property = getProperty(requestType);
+        property.setParams(params);
+        URI uri = property.getURI();
 
-        URI uri = propertyBase.getURI();
-
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(json -> catcherConverter.parse(json, requestType));
+        return catcherConverter.parse(externalFeign.getInfo(uri), requestType);
     }
 
     private PropertyBase getProperty(Class<?> clazz) {

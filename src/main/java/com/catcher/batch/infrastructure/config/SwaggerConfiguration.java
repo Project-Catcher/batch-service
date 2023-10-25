@@ -13,12 +13,12 @@ public class SwaggerConfiguration {
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI()
-                .info(new Info().title("Catcher Service API")
-                        .description("API's using to call Catcher Service")
+                .info(new Info().title("Catcher Batch Service API")
+                        .description("API's using to call Batch Service")
                         .version("v0.0.1")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
-                        .description("CatcherService Wiki Documentation"));
+                        .description("BatchService Wiki Documentation"));
 //              TODO: API 문서 정리된 링크 연결 필요
 //                        .url("https://springshop.wiki.github.org/docs"));
     }

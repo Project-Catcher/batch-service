@@ -1,6 +1,7 @@
-package com.catcher.batch.core.properties;
+package com.catcher.batch.infrastructure.properties;
 
 import com.catcher.batch.core.dto.FestivalApiResponse;
+import com.catcher.batch.core.properties.PropertyBase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -9,7 +10,7 @@ import java.net.URI;
 import java.util.Map;
 
 @Component
-public class FestivalProperties extends PropertyBase{
+public class FestivalProperties extends PropertyBase {
     @Value("${festival.key}")
     private String serviceKey;
 

@@ -1,9 +1,8 @@
 package com.catcher.batch.resource;
 
 import com.catcher.batch.core.dto.FestivalApiResponse;
-import com.catcher.batch.core.dto.MovieApiResponse;
-import com.catcher.batch.core.service.CatcherFeignService;
-import com.catcher.batch.core.service.CatcherJsonService;
+import com.catcher.batch.common.service.CatcherFeignService;
+import com.catcher.batch.common.service.CatcherJsonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,8 @@
-package com.catcher.batch.core.properties;
+package com.catcher.batch.infrastructure.properties;
 
 import com.catcher.batch.core.dto.MovieApiResponse;
+import com.catcher.batch.core.properties.PropertyBase;
+import com.catcher.batch.infrastructure.utils.KmsUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -35,7 +37,7 @@ public class MovieProperties extends PropertyBase {
     public URI getURI() {
         return UriComponentsBuilder
                 .fromUriString(this.getEndPoint())
-                .queryParam("key", serviceKey)
+                .queryParam("key", KmsUtils.decrypt(serviceKey))
                 .queryParam("targetDt", targetDate)
                 .build().toUri();
     }
