@@ -1,22 +1,19 @@
-name : CI for Batch Server
+name: Java CI with Gradle
 
 on:
-  pull_request:
-    branches:
-      - dev
-    types:
-      - closed
+  push:
+    branches: [ "main" ]
 
 env:
-  ecr_url: ${{ secrets.ECR_REPO_DEV }}
-  role_arn: ${{ secrets.OIDC_ROLE }}
-  aws_region: ${{ secrets.AWS_REGION }}
-  webhook_url: ${{ secrets.WEBHOOK }}
+  ECR_URL: ${{ secrets.ECR_REPO_DEV }}
+  ROLE_ARN: ${{ secrets.OIDC_ROLE }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  WEBHOOK_URL: ${{ secrets.WEBHOOK }}
 
 permissions:
   id-token: write
   contents: read
-
+      
 jobs:
   build:
     name: Build
@@ -51,21 +48,27 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: ${{ env.aws_region }}
+          aws-region: ${{ env.AWS_REGION }}
           role-session-name: GitHubActions
-          role-to-assume: ${{ env.role_arn }}
+          role-to-assume: ${{ env.ROLE_ARN }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Publish Image to ECR(CORE-SERVICE)
+      - name: Publish Image to ECR(BATCH-SERVICE)
         run: |
-          docker tag batch-service:latest ${{ env.ecr_url }}:batch-service
-          docker push ${{ env.ecr_url }}:batch-service
+          docker tag batch-service:latest ${{ env.ECR_URL }}:batch-service
+          docker push ${{ env.ECR_URL }}:batch-service
 
-      - name: notification to swit
-        uses: roharon/action-swit@v1
-        with:
-          webhooks_url: ${{ env.webhook_url }}
-          MESSAGE: "🏷 ${{ job.status }} 백엔드 ECR 도커파일 업로드 : Batch-service - by ${{ github.actor }}"
+      - name: Send Notification
+        if: ${{ always() }}
+        run: |
+          if [[ ${{ job.status }} == "success" ]]; then
+            MESSAGE="✅ ${{ job.status }} 백엔드 ECR 도커파일 업로드 성공: batch-service - by ${{ github.actor }}"
+          else
+            MESSAGE="❌ ${{ job.status }} 백엔드 ECR 도커파일 업로드 실패: batch-service - by ${{ github.actor }}"
+          fi
+          curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
+
+    
