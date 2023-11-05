@@ -1,5 +1,6 @@
 package com.catcher.batch.infrastructure.utils;
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.kms.AWSKMS;
@@ -25,14 +26,13 @@ public class KmsUtils {
     @Value("${aws.kms.keyId}")
     private static String KEY_ID;
 
-    @Value("${spring.profiles.active}")
-    private static String PROFILE;
+//    @Value("${spring.profiles.active}")
+//    private static String PROFILE;
 
     public static String encrypt(String text) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
-                    .withCredentials(new ProfileCredentialsProvider(PROFILE))
-                    .withRegion(Regions.AP_NORTHEAST_2)
+                    .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
                     .build();
 
             EncryptRequest request = new EncryptRequest();
@@ -50,8 +50,7 @@ public class KmsUtils {
     public static String decrypt(String cipherBase64) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
-                    .withCredentials(new ProfileCredentialsProvider(PROFILE))
-                    .withRegion(Regions.AP_NORTHEAST_2)
+                    .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
                     .build();
 
             DecryptRequest request = new DecryptRequest();
