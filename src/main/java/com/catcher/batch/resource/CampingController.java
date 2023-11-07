@@ -7,13 +7,15 @@ import com.catcher.batch.core.domain.command.RegisterCampingDataCommand;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.core.service.CampingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/camping")
+@EnableWebMvc
 public class CampingController {
     private final CatcherFeignService catcherFeignService;
     private final CampingService campingService;
