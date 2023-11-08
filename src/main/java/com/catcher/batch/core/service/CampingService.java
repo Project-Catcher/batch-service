@@ -8,6 +8,7 @@ import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.datasource.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class CampingService {
         for (CampingApiResponse.CampingItem campingItem : campingItems) {
             Location location = getLocationByDescription(campingItem.getProvince(), campingItem.getCity());
 
-            String hashKey = campingItem.getKey();
+            String hashKey = hashString(campingItem.getKey());
 
             // 중복 해시값 체크
             if (isDuplicateHashValue(hashKey)) {
@@ -66,5 +67,9 @@ public class CampingService {
     // TODO : 중복체크가 안됨 ㅜ.ㅜ
     private boolean isDuplicateHashValue(String hashKey) {
         return catcherItemRepository.findByItemHashValue(hashKey).isPresent();
+    }
+
+    private String hashString(String input) {
+        return DigestUtils.sha256Hex(input);
     }
 }

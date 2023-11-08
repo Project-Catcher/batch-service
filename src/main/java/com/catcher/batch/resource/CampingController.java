@@ -37,7 +37,7 @@ public class CampingController {
     @PostMapping("/batch")
     public CommonResponse<Object> batchCampingData(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "1") Integer count
+            @RequestParam(defaultValue = "5") Integer count
     ) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("pageNo", page);

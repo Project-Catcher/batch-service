@@ -2,6 +2,7 @@ package com.catcher.batch.core.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
@@ -29,15 +30,6 @@ public class CatcherItem extends BaseTimeEntity {
     @JoinColumn(name = "location_id")
     private Location location;
 
-//    @ElementCollection
-//    @CollectionTable(
-//            name = "item_hash_value_map",
-//            joinColumns = {@JoinColumn(name = "catcher_item_id", referencedColumnName = "id")}
-//    )
-//    @MapKeyColumn(name="item_key")
-//    @Column(name = "item", unique = true, nullable = false)
-//    private Map<String,Long> itemHashValue = new HashMap<>();
-
     @Column(unique = true, nullable = false)
     private String itemHashValue;
 
@@ -58,12 +50,4 @@ public class CatcherItem extends BaseTimeEntity {
 
     @Column(name = "delete_at")
     private ZonedDateTime deletedAt;
-
-//    public void addHashValue(String key,Long value){
-//        if (this.itemHashValue == null) {
-//            this.itemHashValue = new HashMap<>();
-//        }
-//
-//        this.itemHashValue.put(key,value);
-//    }
 }
