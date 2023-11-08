@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
-//@SpringBootTest
+@SpringBootTest
 @MockBean(JpaMetamodelMappingContext.class)
 class BatchApplicationTests {
 
