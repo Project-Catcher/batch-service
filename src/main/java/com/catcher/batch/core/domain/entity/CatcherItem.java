@@ -2,13 +2,10 @@ package com.catcher.batch.core.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Builder
