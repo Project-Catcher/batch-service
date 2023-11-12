@@ -1,7 +1,6 @@
 package com.catcher.batch.resource;
 
-import com.catcher.batch.common.service.CatcherCrawlerService;
-import com.catcher.batch.core.dto.FestivalApiResponse;
+import com.catcher.batch.core.service.ExhibitionService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +15,11 @@ import java.util.List;
 @RequestMapping("/crawler")
 public class CrawlerController {
 
-    private final CatcherCrawlerService catcherCrawlerService;
+    private final ExhibitionService exhibitionService;
 
     @GetMapping("/exhibition")
     public ResponseEntity<List<ObjectNode>> getExhibitionData() {
-        List<ObjectNode> exhibitionCrawlingResponse = catcherCrawlerService.exhibitionCrawling();
+        List<ObjectNode> exhibitionCrawlingResponse = exhibitionService.exhibitionCrawling();
         return ResponseEntity.ok(exhibitionCrawlingResponse);
     }
 }

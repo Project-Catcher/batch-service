@@ -1,7 +1,12 @@
-package com.catcher.batch.common.service;
+package com.catcher.batch.core.service;
 
+import com.catcher.batch.core.database.CatcherItemRepository;
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.datasource.CategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,10 +16,18 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
-public class CatcherCrawlerService {
+@RequiredArgsConstructor
+public class ExhibitionService {
+    private final CatcherItemRepository catcherItemRepository;
+    private final CategoryRepository categoryRepository;
+
     public List<ObjectNode> exhibitionCrawling() {
+        List<CatcherItem> catcherItems = new ArrayList<>();
+        Category category = categoryRepository.findByName("exhibition")
+                .orElseGet(() -> categoryRepository.save(Category.create("exhibition")));
 
         //TODO 드라이버 경로 상황에 맞게 설정, 그에 따른 크롬 및 gradle 의존성 버전도 알맞게 수정
         System.setProperty("webdriver.chrome.driver", "C:/Users/dong/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe");
@@ -68,6 +81,20 @@ public class CatcherCrawlerService {
         }
         //TODO driver.quit 에러 안나는 방법 서치
 //        driver.quit();
+
+        for (ObjectNode exhibitionInfo : exhibition_list) {
+            CatcherItem catcherItem = CatcherItem.builder()
+                    .category(category)
+                    .title(exhibitionInfo.get("eng_name").asText())
+                    .itemHashValue(UUID.randomUUID().toString())
+                    .description(exhibitionInfo.get("period").asText())
+                    .resourceUrl(exhibitionInfo.get("homepage").asText())
+                    .build();
+
+            catcherItems.add(catcherItem);
+        }
+        catcherItemRepository.saveAll(catcherItems);
+
         return exhibition_list;
     }
 
