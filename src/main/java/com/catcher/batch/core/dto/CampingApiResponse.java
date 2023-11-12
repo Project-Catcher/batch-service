@@ -63,10 +63,10 @@ public class CampingApiResponse {
         private String homepage;
 
         @JsonProperty("mapX")
-        private String mapX;
+        private String latitude;
 
         @JsonProperty("mapY")
-        private String mapY;
+        private String longitude;
 
         @JsonProperty("firstImageUrl")
         private String thumbnailUrl;
