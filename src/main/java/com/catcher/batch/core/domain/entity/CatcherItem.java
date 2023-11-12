@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -40,10 +39,10 @@ public class CatcherItem extends BaseTimeEntity {
     private String resourceUrl;
 
     @Column(name = "start_at")
-    private LocalDateTime startAt;
+    private ZonedDateTime startAt;
 
     @Column(name = "end_at")
-    private LocalDateTime endAt;
+    private ZonedDateTime endAt;
 
     @Column(name = "delete_at")
     private ZonedDateTime deletedAt;
