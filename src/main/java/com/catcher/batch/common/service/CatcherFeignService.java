@@ -2,11 +2,13 @@ package com.catcher.batch.common.service;
 
 import com.catcher.batch.core.converter.CatcherConverter;
 import com.catcher.batch.core.properties.PropertyBase;
+import com.catcher.batch.core.properties.HeaderSupport;
 import com.catcher.batch.resource.external.ExternalFeign;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,13 @@ public class CatcherFeignService {
         PropertyBase property = getProperty(requestType);
         property.setParams(params);
         URI uri = property.getURI();
+
+        // 헤더가 있는 경우
+        HttpHeaders headers;
+        if (property instanceof HeaderSupport headerSupport) {
+            headers = headerSupport.addHeaders();
+            return catcherConverter.parse(externalFeign.getInfoWithHeader(headers.getFirst("Authorization"), uri), requestType);
+        }
 
         return catcherConverter.parse(externalFeign.getInfo(uri), requestType);
     }
