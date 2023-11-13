@@ -8,12 +8,14 @@ import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.RestaurantApiResponse;
 import com.catcher.batch.datasource.CategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.catcher.batch.common.utils.HashCodeGenerator.hashString;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +30,14 @@ public class RestaurantService {
         Category category = categoryRepository.findByName(CATEGORY_NAME)
                 .orElseGet(() -> categoryRepository.save(Category.create(CATEGORY_NAME)));
 
+        Map<String, String> itemMap = catcherItemRepository.findByCategory(category).stream()
+                .collect(Collectors.toMap(CatcherItem::getItemHashValue, CatcherItem::getTitle));
+
         List<CatcherItem> catcherItems = restaurantApiResponse.getItems().stream()
-                .filter(item -> !isDuplicateHashValue(hashString(item.getKey())))
+                .filter(item -> !itemMap.containsKey(hashString(CATEGORY_NAME, item.getKey())))
                 .map(item -> {
                     Location location = getLocation(item.getAddress());
-                    String hashKey = hashString(item.getKey());
+                    String hashKey = hashString(CATEGORY_NAME, item.getKey());
 
                     return CatcherItem.builder()
                             .category(category)
@@ -55,13 +60,5 @@ public class RestaurantService {
 
         return locationRepository.findByDescription(province, city)
                 .orElseThrow();
-    }
-
-    private boolean isDuplicateHashValue(String hashKey) {
-        return catcherItemRepository.findByItemHashValue(hashKey).isPresent();
-    }
-
-    private String hashString(String input) {
-        return DigestUtils.sha256Hex(input);
     }
 }

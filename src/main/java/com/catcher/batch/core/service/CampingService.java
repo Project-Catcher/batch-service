@@ -8,12 +8,14 @@ import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.datasource.CategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.catcher.batch.common.utils.HashCodeGenerator.hashString;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +30,16 @@ public class CampingService {
         Category category = categoryRepository.findByName(CATEGORY_NAME)
                 .orElseGet(() -> categoryRepository.save(Category.create(CATEGORY_NAME)));
 
+        Map<String, String> itemMap = catcherItemRepository.findByCategory(category).stream()
+                .collect(Collectors.toMap(CatcherItem::getItemHashValue, CatcherItem::getTitle));
+
         List<CampingApiResponse.CampingItem> campingItems = campingApiResponse.getItems().getItem();
 
         List<CatcherItem> catcherItems = campingItems.stream()
-                .filter(campingItem -> !isDuplicateHashValue(hashString(campingItem.getKey())))
+                .filter(campingItem -> !itemMap.containsKey(hashString(CATEGORY_NAME, campingItem.getKey())))
                 .map(campingItem -> {
                     Location location = getLocationByDescription(campingItem.getProvince(), campingItem.getCity());
-                    String hashKey = hashString(campingItem.getKey());
+                    String hashKey = hashString(CATEGORY_NAME, campingItem.getKey());
 
                     return CatcherItem.builder()
                             .category(category)
@@ -55,13 +60,5 @@ public class CampingService {
 
         return locationRepository.findByDescription(withoutDo, city)
                 .orElseThrow();
-    }
-
-    private boolean isDuplicateHashValue(String hashKey) {
-        return catcherItemRepository.findByItemHashValue(hashKey).isPresent();
-    }
-
-    private String hashString(String input) {
-        return DigestUtils.sha256Hex(input);
     }
 }
