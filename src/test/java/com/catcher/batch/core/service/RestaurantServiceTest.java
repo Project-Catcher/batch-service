@@ -1,11 +1,13 @@
 package com.catcher.batch.core.service;
 
 import com.catcher.batch.core.database.CatcherItemRepository;
+import com.catcher.batch.core.database.CategoryRepository;
 import com.catcher.batch.core.database.LocationRepository;
+import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.RestaurantApiResponse;
-import com.catcher.batch.datasource.CategoryRepository;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -42,11 +44,17 @@ class RestaurantServiceTest {
 
     private RestaurantApiResponse restaurantApiResponse;
     private RestaurantApiResponse.RestaurantItem restaurantItem;
+    private CatcherItem catcherItem;
+    private Location location;
+    private Category category;
 
     @BeforeEach
     void beforeEach() {
-        restaurantApiResponse = mock(RestaurantApiResponse.class);
+        restaurantApiResponse = Mockito.mock(RestaurantApiResponse.class);
         restaurantItem = Mockito.mock(RestaurantApiResponse.RestaurantItem.class);
+        catcherItem = Mockito.mock(CatcherItem.class);
+        location = Mockito.mock(Location.class);
+        category = Mockito.mock((Category.class));
     }
 
     @DisplayName("SUCCESS : 음식점 db 저장 성공 테스트")
@@ -54,27 +62,34 @@ class RestaurantServiceTest {
     void batchTest_SuccessfulSave() {
         // Given
         setUpRestaurantItem();
-        when(restaurantApiResponse.getItems()).thenReturn(List.of(restaurantItem));
 
         // When
         restaurantService.batch(restaurantApiResponse);
 
         // Then
-        Mockito.verify(catcherItemRepository, Mockito.times(1)).saveAll(Mockito.anyList());
+        Mockito.verify(catcherItemRepository, Mockito.times(1)).save(Mockito.any());
     }
 
     @DisplayName("SUCCESS: 음식점 db 저장 성공 테스트 - 중복 객체 확인")
     @Test
     void batchTest_SuccessfulSaveWithDuplicate() {
         // Given
+        String hashKey = DigestUtils.sha256Hex("restaurant" + "-" + "key");
+
+        when(catcherItem.getItemHashValue()).thenReturn(hashKey);
+        when(catcherItem.getLocation()).thenReturn(location);
+        when(catcherItem.getTitle()).thenReturn("저장된 맛집");
+        when(catcherItem.getCategory()).thenReturn(category);
+
+        when(catcherItemRepository.findByCategory(any(Category.class))).thenAnswer(invocation -> Collections.singletonList(catcherItem));
+
         setUpRestaurantItem();
-        when(restaurantApiResponse.getItems()).thenReturn(Arrays.asList(restaurantItem, restaurantItem));
 
         // When
         restaurantService.batch(restaurantApiResponse);
 
         // Then
-        Mockito.verify(catcherItemRepository, Mockito.times(1)).saveAll(Mockito.anyList());
+        Mockito.verify(catcherItemRepository, Mockito.never()).save(Mockito.any());
     }
 
     private void setUpRestaurantItem() {
@@ -85,8 +100,8 @@ class RestaurantServiceTest {
         when(restaurantItem.getLatitude()).thenReturn("37.4783683761333");
         when(restaurantItem.getLongitude()).thenReturn("126.951561853868");
 
-        when(restaurantApiResponse.getItems()).thenReturn(List.of(restaurantItem));
-        Mockito.when(categoryRepository.findByName("restaurant")).thenReturn(Optional.of(Category.create("restaurant")));
-        Mockito.when(locationRepository.findByDescription("서울", "관악구")).thenReturn(Optional.of(Location.create("1162000000", "37.4783683761333", "126.951561853868", "서울 관악구")));
+        Mockito.when(restaurantApiResponse.getItems()).thenReturn(List.of(restaurantItem));
+        Mockito.when(categoryRepository.findByName("restaurant")).thenReturn(Optional.of(category));
+        Mockito.when(locationRepository.findByDescription("서울", "관악구")).thenReturn(Optional.of(location));
     }
 }
