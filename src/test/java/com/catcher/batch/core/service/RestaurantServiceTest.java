@@ -67,7 +67,7 @@ class RestaurantServiceTest {
         restaurantService.batch(restaurantApiResponse);
 
         // Then
-        Mockito.verify(catcherItemRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(catcherItemRepository, Mockito.times(1)).saveAll(Mockito.anyList());
     }
 
     @DisplayName("SUCCESS: 음식점 db 저장 성공 테스트 - 중복 객체 확인")
@@ -89,7 +89,7 @@ class RestaurantServiceTest {
         restaurantService.batch(restaurantApiResponse);
 
         // Then
-        Mockito.verify(catcherItemRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(catcherItemRepository, Mockito.never()).saveAll(Mockito.anyList());
     }
 
     private void setUpRestaurantItem() {
