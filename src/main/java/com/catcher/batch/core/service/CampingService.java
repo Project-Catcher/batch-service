@@ -41,6 +41,8 @@ public class CampingService {
                     Location location = getLocationByDescription(campingItem.getProvince(), campingItem.getCity());
                     String hashKey = hashString(CATEGORY_NAME, campingItem.getKey());
 
+                    itemMap.put(hashKey, campingItem.getName());
+
                     return CatcherItem.builder()
                             .category(category)
                             .location(location)
@@ -52,7 +54,9 @@ public class CampingService {
                 })
                 .collect(Collectors.toList());
 
-        catcherItemRepository.saveAll(catcherItems);
+        if (!catcherItems.isEmpty()) {
+            catcherItemRepository.saveAll(catcherItems);
+        }
     }
 
     private Location getLocationByDescription(String province, String city) {
