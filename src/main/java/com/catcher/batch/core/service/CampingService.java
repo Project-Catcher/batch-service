@@ -1,12 +1,12 @@
 package com.catcher.batch.core.service;
 
 import com.catcher.batch.core.database.CatcherItemRepository;
+import com.catcher.batch.core.database.CategoryRepository;
 import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.CampingApiResponse;
-import com.catcher.batch.datasource.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
