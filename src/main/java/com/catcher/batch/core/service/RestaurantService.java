@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -33,23 +32,22 @@ public class RestaurantService {
         Map<String, String> itemMap = catcherItemRepository.findByCategory(category).stream()
                 .collect(Collectors.toMap(CatcherItem::getItemHashValue, CatcherItem::getTitle));
 
-        List<CatcherItem> catcherItems = restaurantApiResponse.getItems().stream()
+        restaurantApiResponse.getItems().stream()
                 .filter(item -> !itemMap.containsKey(hashString(CATEGORY_NAME, item.getKey())))
-                .map(item -> {
+                .forEach(item -> {
                     Location location = getLocation(item.getAddress());
                     String hashKey = hashString(CATEGORY_NAME, item.getKey());
 
-                    return CatcherItem.builder()
+                    CatcherItem catcherItem = CatcherItem.builder()
                             .category(category)
                             .location(location)
                             .title(item.getName())
                             .resourceUrl(item.getResourceUrl())
                             .itemHashValue(hashKey)
                             .build();
-                })
-                .collect(Collectors.toList());
 
-        catcherItemRepository.saveAll(catcherItems);
+                    catcherItemRepository.save(catcherItem);
+                });
     }
 
     private Location getLocation(String address) {
