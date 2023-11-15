@@ -54,7 +54,7 @@ class RestaurantServiceTest {
         restaurantItem = Mockito.mock(RestaurantApiResponse.RestaurantItem.class);
         catcherItem = Mockito.mock(CatcherItem.class);
         location = Mockito.mock(Location.class);
-        category = Mockito.mock((Category.class));
+        category = Mockito.mock(Category.class);
     }
 
     @DisplayName("SUCCESS : 음식점 db 저장 성공 테스트")
