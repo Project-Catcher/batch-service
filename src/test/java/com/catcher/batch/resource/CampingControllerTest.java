@@ -2,6 +2,7 @@ package com.catcher.batch.resource;
 
 import com.catcher.batch.common.service.CatcherFeignService;
 import com.catcher.batch.core.domain.CommandExecutor;
+import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.core.service.CampingService;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +47,8 @@ class CampingControllerTest {
     @Test
     void getCampingDataByFeign() throws Exception {
         CampingApiResponse campingApiResponse = new CampingApiResponse();
+
+
 
         when(catcherFeignService.parseService(new HashMap<>(), CampingApiResponse.class))
                 .thenReturn(campingApiResponse);
