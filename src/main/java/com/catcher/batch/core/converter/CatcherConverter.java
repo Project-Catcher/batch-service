@@ -3,6 +3,7 @@ package com.catcher.batch.core.converter;
 import com.catcher.batch.annotation.CatcherJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,8 @@ public class CatcherConverter {
     private JSONObject getJsonObject(String json, String jsonPath) {
         if(jsonPath == null) {
             throw new IllegalStateException();
+        } else if (StringUtils.isBlank(jsonPath)) {
+            return new JSONObject(json);
         }
 
         JSONObject jsonObject = new JSONObject(json);
