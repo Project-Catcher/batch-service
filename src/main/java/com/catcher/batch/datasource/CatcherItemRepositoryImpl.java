@@ -33,4 +33,9 @@ public class CatcherItemRepositoryImpl implements CatcherItemRepository {
     public List<CatcherItem> findByCategory(Category category) {
         return catcherItemJpaRepository.findByCategory(category);
     }
+
+    @Override
+    public void deleteAll(List<CatcherItem> catcherItem) {
+        catcherItemJpaRepository.deleteAll(catcherItem);
+    }
 }
