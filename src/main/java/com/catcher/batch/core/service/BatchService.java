@@ -58,6 +58,7 @@ public abstract class BatchService {
 
         if (!saveItems.isEmpty()) {
             catcherItemRepository.saveAll(saveItems);
+            catcherItemRepository.saveAll(catcherItems);
         }
 
         if (!deleteItems.isEmpty()) {
