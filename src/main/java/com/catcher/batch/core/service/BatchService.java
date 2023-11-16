@@ -23,7 +23,6 @@ public abstract class BatchService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
 
-    @Transactional
     public void batch(List<? extends ApiResponse> apiResponses) {
         Category category = categoryRepository.findByName(apiResponses.get(0).getCategory())
                 .orElseGet(() -> categoryRepository.save(Category.create(apiResponses.get(0).getCategory())));
@@ -32,6 +31,7 @@ public abstract class BatchService {
                 .collect(Collectors.toMap(CatcherItem::getItemHashValue, Function.identity()));
 
         List<CatcherItem> deleteItems = new ArrayList<>();
+        List<CatcherItem> saveItems = new ArrayList<>();
 
         List<CatcherItem> catcherItems = apiResponses.stream()
                 .filter(apiResponse -> {
@@ -39,24 +39,25 @@ public abstract class BatchService {
                     if (itemMap.containsKey(hashKey)) {
                         if (isExpired(apiResponse.getEndAt())) {
                             deleteItems.add(itemMap.get(hashKey));
-                            itemMap.remove(hashKey);
-                            return false;
                         }
                         if (isContentChanged(itemMap.get(hashKey), apiResponse)) {
-                            return true;
+                            CatcherItem e = itemMap.get(hashKey);
+                            // e.changeContent(dsfasfaf,dadasd); ... 요기에 바꾸는 로직 추가
+                            saveItems.add(e);
                         }
+                        return false;
                     } else {
-                        if(isExpired(apiResponse.getEndAt())) {
+                        if (isExpired(apiResponse.getEndAt())) {
                             return false;
                         }
+                        return true;
                     }
-                    return true;
                 })
                 .map(apiResponse -> apiResponseToCatcherItem(apiResponse, category, getLocation(apiResponse)))
                 .toList();
 
-        if (!catcherItems.isEmpty()) {
-            catcherItemRepository.saveAll(catcherItems);
+        if (!saveItems.isEmpty()) {
+            catcherItemRepository.saveAll(saveItems);
         }
 
         if (!deleteItems.isEmpty()) {
