@@ -26,9 +26,6 @@ public class KmsUtils {
     @Value("${aws.kms.keyId}")
     private static String KEY_ID;
 
-//    @Value("${spring.profiles.active}")
-//    private static String PROFILE;
-
     public static String encrypt(String text) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
