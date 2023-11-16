@@ -36,10 +36,17 @@ public abstract class BatchService {
         List<CatcherItem> catcherItems = apiResponses.stream()
                 .filter(apiResponse -> {
                     String hashKey = hashString(apiResponse);
-                    if (itemMap.containsKey(hashKey) && isContentChanged(itemMap.get(hashKey), apiResponse)) {
-                        if (isExpired(apiResponse)) {
+                    if (itemMap.containsKey(hashKey)) {
+                        if (isExpired(apiResponse.getEndAt())) {
                             deleteItems.add(itemMap.get(hashKey));
                             itemMap.remove(hashKey);
+                            return false;
+                        }
+                        if (isContentChanged(itemMap.get(hashKey), apiResponse)) {
+                            return true;
+                        }
+                    } else {
+                        if(isExpired(apiResponse.getEndAt())) {
                             return false;
                         }
                     }
@@ -93,7 +100,7 @@ public abstract class BatchService {
                 .build();
     }
 
-    private boolean isExpired(ApiResponse apiResponse) {
-        return apiResponse.getStartAt() != null && ZonedDateTime.now().isAfter(apiResponse.getStartAt());
+    private boolean isExpired(ZonedDateTime endDateTime) {
+        return endDateTime != null && ZonedDateTime.now().isAfter(endDateTime);
     }
 }
