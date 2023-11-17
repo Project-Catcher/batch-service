@@ -6,7 +6,7 @@ import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
-import com.catcher.batch.core.dto.CampingApiResponse;
+import com.catcher.batch.core.dto.RestaurantApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,36 +19,33 @@ import static com.catcher.batch.common.utils.HashCodeGenerator.hashString;
 
 @Service
 @RequiredArgsConstructor
-public class CampingService {
+public class RestaurantService {
     private final CatcherItemRepository catcherItemRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
-    public static final String CATEGORY_NAME = "camping";
+    public static final String CATEGORY_NAME = "restaurant";
 
     @Transactional
-    public void batch(CampingApiResponse campingApiResponse) {
+    public void batch(RestaurantApiResponse restaurantApiResponse) {
         Category category = categoryRepository.findByName(CATEGORY_NAME)
                 .orElseGet(() -> categoryRepository.save(Category.create(CATEGORY_NAME)));
 
         Map<String, String> itemMap = catcherItemRepository.findByCategory(category).stream()
                 .collect(Collectors.toMap(CatcherItem::getItemHashValue, CatcherItem::getTitle));
 
-        List<CampingApiResponse.CampingItem> campingItems = campingApiResponse.getItems().getItem();
+        List<CatcherItem> catcherItems = restaurantApiResponse.getItems().stream()
+                .filter(item -> !itemMap.containsKey(hashString(CATEGORY_NAME, item.getKey())))
+                .map(item -> {
+                    Location location = getLocation(item.getAddress());
+                    String hashKey = hashString(CATEGORY_NAME, item.getKey());
 
-        List<CatcherItem> catcherItems = campingItems.stream()
-                .filter(campingItem -> !itemMap.containsKey(hashString(CATEGORY_NAME, campingItem.getKey())))
-                .map(campingItem -> {
-                    Location location = getLocationByDescription(campingItem.getProvince(), campingItem.getCity());
-                    String hashKey = hashString(CATEGORY_NAME, campingItem.getKey());
-
-                    itemMap.put(hashKey, campingItem.getName());
+                    itemMap.put(hashKey, item.getName());
 
                     return CatcherItem.builder()
                             .category(category)
                             .location(location)
-                            .title(campingItem.getName())
-                            .description(campingItem.getDescription())
-                            .thumbnailUrl(campingItem.getThumbnailUrl())
+                            .title(item.getName())
+                            .resourceUrl(item.getResourceUrl())
                             .itemHashValue(hashKey)
                             .build();
                 })
@@ -59,10 +56,13 @@ public class CampingService {
         }
     }
 
-    private Location getLocationByDescription(String province, String city) {
-        String withoutDo = province.replace("도", "");
+    private Location getLocation(String address) {
+        String[] parts = address.split("\\s+");
 
-        return locationRepository.findByDescription(withoutDo, city)
+        String province = parts[0];
+        String city = parts[1];
+
+        return locationRepository.findByDescription(province, city)
                 .orElseThrow();
     }
 }

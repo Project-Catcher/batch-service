@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "delete_at = 'N'")
+@Where(clause = "deleted_at IS NULL")
 @Table(name = "catcher_item")
 public class CatcherItem extends BaseTimeEntity {
     @Id
@@ -44,6 +44,6 @@ public class CatcherItem extends BaseTimeEntity {
     @Column(name = "end_at")
     private ZonedDateTime endAt;
 
-    @Column(name = "delete_at")
+    @Column(name = "deleted_at")
     private ZonedDateTime deletedAt;
 }
