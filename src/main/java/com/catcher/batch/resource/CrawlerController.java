@@ -1,5 +1,6 @@
 package com.catcher.batch.resource;
 
+import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.service.ExhibitionService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class CrawlerController {
     private final ExhibitionService exhibitionService;
 
     @GetMapping("/exhibition")
-    public ResponseEntity<List<ObjectNode>> getExhibitionData() {
-        List<ObjectNode> exhibitionCrawlingResponse = exhibitionService.exhibitionCrawling();
+    public ResponseEntity<List<CatcherItem>> getExhibitionData() {
+        List<CatcherItem> exhibitionCrawlingResponse = exhibitionService.exhibitionCrawling();
         return ResponseEntity.ok(exhibitionCrawlingResponse);
     }
 }
