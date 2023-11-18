@@ -1,13 +1,15 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.annotation.CatcherJson;
+import com.catcher.batch.common.utils.HashCodeGenerator;
 import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +35,10 @@ public class FestivalApiResponse {
         private String fetivalName;
 
         @JsonProperty("rdnmadr")
-        private String address;
+        private String roadAddress;
+
+        @JsonProperty("lnmadr")
+        private String zibunAddress;
 
         @JsonProperty("fstvlCo")
         private String description;
@@ -54,12 +59,12 @@ public class FestivalApiResponse {
 
         @Override
         public String getAddress() {
-            return address;
+            return StringUtils.isBlank(roadAddress) ? zibunAddress : roadAddress;
         }
 
         @Override
         public String getHashString() {
-            return CATEGORY + "-" + fetivalName;
+            return HashCodeGenerator.hashString(CATEGORY, fetivalName, startDate, endDate);
         }
 
         @Override
@@ -68,13 +73,17 @@ public class FestivalApiResponse {
         }
 
         @Override
-        public CatcherItem toEntity(Location location) {
+        public CatcherItem toEntity(Location location, Category category) {
             return CatcherItem
                     .builder()
+                    .title(fetivalName)
                     .itemHashValue(getHashString())
                     .startAt(startDate.toInstant().atZone(zoneId))
                     .resourceUrl(resourceUrl)
                     .description(description)
+                    .endAt(getEndAt())
+                    .location(location)
+                    .category(category)
                     .build();
         }
     }

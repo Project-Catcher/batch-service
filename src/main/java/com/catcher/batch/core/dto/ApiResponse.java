@@ -1,6 +1,7 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 
 import java.time.ZoneId;
@@ -17,7 +18,7 @@ public interface ApiResponse {
 
     String getCategory();
 
-    CatcherItem toEntity(Location location);
+    CatcherItem toEntity(Location location, Category category);
 
     default boolean isExpired() {
         return getEndAt() != null && ZonedDateTime.now(zoneId).isAfter(getEndAt());
