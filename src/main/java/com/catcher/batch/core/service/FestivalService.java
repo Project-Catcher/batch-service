@@ -7,11 +7,11 @@ import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-@Service
 public class FestivalService extends BatchService {
 
     public FestivalService(CatcherItemRepository catcherItemRepository, CategoryRepository categoryRepository, LocationRepository locationRepository) {
@@ -32,6 +32,16 @@ public class FestivalService extends BatchService {
 
     @Override
     protected Location getLocation(ApiResponse apiResponse) {
-        return getLocation(apiResponse.getAddress());
+        if (!StringUtils.isBlank(apiResponse.getAddress())) {
+            String[] address = apiResponse.getAddress().split(" ");
+            try {
+                return getLocation(address[0], address[1]);
+
+            } catch (Exception e) {
+                throw e;
+            }
+
+        }
+        return null;
     }
 }

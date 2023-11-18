@@ -9,6 +9,7 @@ import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
@@ -18,9 +19,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.catcher.batch.utils.CustomBeanUtils.*;
-
 @RequiredArgsConstructor
+@Slf4j
 public abstract class BatchService {
     private final CatcherItemRepository catcherItemRepository;
     private final CategoryRepository categoryRepository;
@@ -36,40 +36,44 @@ public abstract class BatchService {
 
         List<CatcherItem> deleteItems = new ArrayList<>();
         List<CatcherItem> saveItems = new ArrayList<>();
-
-
         List<CatcherItem> catcherItems = apiResponses.stream()
                 .filter(apiResponse -> {
-                    String hashKey = hashString(apiResponse);
+                    String hashKey = apiResponse.getHashString();
                     CatcherItem savedCatcherItem = null;
 
                     if ((savedCatcherItem = itemMap.get(hashKey)) != null) {
                         if (isExpired(apiResponse.getEndAt())) {
                             deleteItems.add(savedCatcherItem);
                         }
-                        CatcherItem receivedCatcherItem = apiResponse.toEntity(getLocation(apiResponse));
+                        CatcherItem receivedCatcherItem = apiResponse.toEntity(getLocation(apiResponse), category);
 
                         if (isContentChanged(savedCatcherItem, receivedCatcherItem)) {
-                            copyProperties(receivedCatcherItem, savedCatcherItem);
+                            savedCatcherItem.changeContents(receivedCatcherItem);
                             saveItems.add(savedCatcherItem);
                         }
 
                         return false;
                     }
-                    return !isExpired(apiResponse.getEndAt());
+                    if (isExpired(apiResponse.getEndAt())) {
+                        return false;
+                    }
+                    return true;
                 })
-                .map(apiResponse -> apiResponse.toEntity(getLocation(apiResponse)))
+                .map(apiResponse -> apiResponse.toEntity(getLocation(apiResponse), category))
                 .toList();
 
         if (!saveItems.isEmpty()) {
+            log.info("변경된 아이템 개수 : {}, 카테고리 = {}", saveItems.size(), category.getName());
             catcherItemRepository.saveAll(saveItems);
         }
 
         if (!catcherItems.isEmpty()) {
+            log.info("변경된 아이템 개수 : {}, 카테고리 = {}", catcherItems.size(), category.getName());
             catcherItemRepository.saveAll(catcherItems);
         }
 
         if (!deleteItems.isEmpty()) {
+            log.info("삭제된 아이템 개수 : {}, 카테고리 = {}", deleteItems.size(), category.getName());
             catcherItemRepository.deleteAll(deleteItems);
         }
     }
@@ -86,9 +90,8 @@ public abstract class BatchService {
 
     protected Location getLocation(String province, String city) {
         String withoutDo = province.replace("도", "");
-
         return locationRepository.findByDescription(withoutDo, city)
-                .orElseThrow();
+                .orElse(null);
     }
 
     protected Location getLocation(String address) {
