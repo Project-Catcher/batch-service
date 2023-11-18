@@ -8,7 +8,6 @@ import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
-import com.catcher.batch.utils.CustomBeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +50,7 @@ public abstract class BatchService {
                         CatcherItem receivedCatcherItem = apiResponse.toEntity(getLocation(apiResponse));
 
                         if (isContentChanged(savedCatcherItem, receivedCatcherItem)) {
-                            copyNonNullProperties(receivedCatcherItem, savedCatcherItem);
+                            copyProperties(receivedCatcherItem, savedCatcherItem);
                             saveItems.add(savedCatcherItem);
                         }
 

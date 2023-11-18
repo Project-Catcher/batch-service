@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 
 public class CustomBeanUtils {
-    public static <T> T copyNonNullProperties(T source, T destination) {
+    public static <T> T copyProperties(T source, T destination) {
         if (source == null || destination == null || source.getClass() != destination.getClass()) {
             return null;
         }
@@ -17,7 +17,7 @@ public class CustomBeanUtils {
 
         for (final Field property : source.getClass().getDeclaredFields()) {
             Object sourceProperty = src.getPropertyValue(property.getName());
-            if (sourceProperty != null && !(sourceProperty instanceof Collection<?>)) {
+            if (!(sourceProperty instanceof Collection<?>)) {
                 dest.setPropertyValue(property.getName(), sourceProperty);
             }
         }
