@@ -8,7 +8,6 @@ import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
