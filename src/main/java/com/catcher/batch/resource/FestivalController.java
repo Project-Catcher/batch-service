@@ -3,6 +3,7 @@ package com.catcher.batch.resource;
 import com.catcher.batch.core.dto.FestivalApiResponse;
 import com.catcher.batch.common.service.CatcherFeignService;
 import com.catcher.batch.common.service.CatcherJsonService;
+import com.catcher.batch.core.service.FestivalServiceProxy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +20,12 @@ import java.util.HashMap;
 public class FestivalController {
     private final CatcherJsonService catcherJsonService;
     private final CatcherFeignService catcherFeignService;
+    private final FestivalServiceProxy festivalServiceProxy;
 
     @GetMapping("/webclient-batch")
     public Mono<ResponseEntity<FestivalApiResponse>> getMovieDataByWebClient(@RequestParam(defaultValue = "1") Integer page,
                                                                              @RequestParam(defaultValue = "5") Integer count) {
+
         // TODO : Mapping Param 수정
         HashMap<String, Object> params = new HashMap<>();
         params.put("pageNo", page);
@@ -46,5 +49,13 @@ public class FestivalController {
         FestivalApiResponse festivalApiResponse = catcherFeignService.parseService(params, FestivalApiResponse.class);
 
         return ResponseEntity.ok(festivalApiResponse);
+    }
+
+    //TODO : 이 부분은 배치로 옮겨야함.
+    @GetMapping("/batch")
+    public ResponseEntity<Void> startBatch() {
+        festivalServiceProxy.handleBatch();
+
+        return ResponseEntity.ok(null);
     }
 }
