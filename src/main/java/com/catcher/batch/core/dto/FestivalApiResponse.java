@@ -1,6 +1,8 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.annotation.CatcherJson;
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -25,6 +27,8 @@ public class FestivalApiResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class FestivalItem implements ApiResponse {
+        private final static String CATEGORY = "festival";
+
         @JsonProperty("fstvlNm")
         private String fetivalName;
 
@@ -44,43 +48,8 @@ public class FestivalApiResponse {
         private Date endDate;
 
         @Override
-        public String getCategory() {
-            return "festival";
-        }
-
-        @Override
-        public String getHashValue() {
-            return fetivalName;
-        }
-
-        @Override
-        public String getTitle() {
-            return fetivalName;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String getThumbnailUrl() {
-            return null;
-        }
-
-        @Override
-        public String getResourceUrl() {
-            return resourceUrl;
-        }
-
-        @Override
-        public ZonedDateTime getStartAt() {
-            return startDate.toInstant().atZone(zoneId);
-        }
-
-        @Override
         public ZonedDateTime getEndAt() {
-            return endDate.toInstant().atZone(zoneId);
+            return endDate == null ? null : endDate.toInstant().atZone(zoneId);
         }
 
         @Override
@@ -89,13 +58,24 @@ public class FestivalApiResponse {
         }
 
         @Override
-        public String getProvince() {
-            return null;
+        public String getHashString() {
+            return CATEGORY + "-" + fetivalName;
         }
 
         @Override
-        public String getCity() {
-            return null;
+        public String getCategory() {
+            return CATEGORY;
+        }
+
+        @Override
+        public CatcherItem toEntity(Location location) {
+            return CatcherItem
+                    .builder()
+                    .itemHashValue(getHashString())
+                    .startAt(startDate.toInstant().atZone(zoneId))
+                    .resourceUrl(resourceUrl)
+                    .description(description)
+                    .build();
         }
     }
 }

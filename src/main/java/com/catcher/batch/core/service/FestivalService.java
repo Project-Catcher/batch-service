@@ -19,15 +19,15 @@ public class FestivalService extends BatchService {
     }
 
     @Override
-    protected boolean isContentChanged(CatcherItem catcherItem, ApiResponse apiResponse) {
-        int responseHash = Objects.hash(catcherItem.getStartAt(), catcherItem.getEndAt(), catcherItem.getTitle());
-        int catcherHash = Objects.hash(apiResponse.getStartAt(), apiResponse.getEndAt(), apiResponse.getTitle());
+    protected boolean isContentChanged(CatcherItem originCatcherItem, CatcherItem newCatcherItem) {
+        int responseHash = Objects.hash(newCatcherItem.getStartAt(), newCatcherItem.getEndAt(), newCatcherItem.getTitle());
+        int catcherHash = Objects.hash(originCatcherItem.getStartAt(), originCatcherItem.getEndAt(), originCatcherItem.getTitle());
         return responseHash != catcherHash;
     }
 
     @Override
     protected String hashString(ApiResponse apiResponse) {
-        return HashCodeGenerator.hashString(apiResponse.getCategory(), apiResponse.getTitle());
+        return HashCodeGenerator.hashString(apiResponse.getHashString());
     }
 
     @Override
