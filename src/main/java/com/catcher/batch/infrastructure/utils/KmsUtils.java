@@ -32,6 +32,7 @@ public class KmsUtils {
     public static String encrypt(String text) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
+                    .withRegion(Regions.AP_NORTHEAST_2)
                     .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
                     .build();
 
@@ -50,6 +51,7 @@ public class KmsUtils {
     public static String decrypt(String cipherBase64) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
+                    .withRegion(Regions.AP_NORTHEAST_2)
                     .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
                     .build();
 
