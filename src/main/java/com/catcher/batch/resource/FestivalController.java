@@ -25,7 +25,6 @@ public class FestivalController {
     @GetMapping("/webclient-batch")
     public Mono<ResponseEntity<FestivalApiResponse>> getMovieDataByWebClient(@RequestParam(defaultValue = "1") Integer page,
                                                                              @RequestParam(defaultValue = "5") Integer count) {
-
         // TODO : Mapping Param 수정
         HashMap<String, Object> params = new HashMap<>();
         params.put("pageNo", page);

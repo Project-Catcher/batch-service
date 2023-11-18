@@ -34,13 +34,8 @@ public class FestivalService extends BatchService {
     protected Location getLocation(ApiResponse apiResponse) {
         if (!StringUtils.isBlank(apiResponse.getAddress())) {
             String[] address = apiResponse.getAddress().split(" ");
-            try {
-                return getLocation(address[0], address[1]);
 
-            } catch (Exception e) {
-                throw e;
-            }
-
+            return getLocation(address[0], address[1]);
         }
         return null;
     }

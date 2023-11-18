@@ -20,7 +20,10 @@ public class FestivalServiceProxy extends FestivalService {
     private int requestCount = 100;
     private final CatcherJsonService catcherJsonService;
 
-    public FestivalServiceProxy(CatcherItemRepository catcherItemRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, CatcherJsonService catcherJsonService) {
+    public FestivalServiceProxy(CatcherItemRepository catcherItemRepository,
+                                CategoryRepository categoryRepository,
+                                LocationRepository locationRepository,
+                                CatcherJsonService catcherJsonService) {
         super(catcherItemRepository, categoryRepository, locationRepository);
         this.catcherJsonService = catcherJsonService;
     }
