@@ -9,7 +9,7 @@ import java.util.Collection;
 public class CustomBeanUtils {
     public static <T> T copyProperties(T source, T destination) {
         if (source == null || destination == null || source.getClass() != destination.getClass()) {
-            return null;
+            throw new RuntimeException(); // TODO: Handle Exception
         }
 
         final BeanWrapper src = new BeanWrapperImpl(source);
