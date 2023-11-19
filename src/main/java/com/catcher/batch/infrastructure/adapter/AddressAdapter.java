@@ -1,7 +1,6 @@
 package com.catcher.batch.infrastructure.adapter;
 
 import com.catcher.batch.common.response.CommonResponse;
-import com.catcher.batch.common.service.CatcherFeignService;
 import com.catcher.batch.core.port.AddressPort;
 import com.catcher.batch.infrastructure.external.CatcherServiceFeignClient;
 import com.catcher.batch.infrastructure.external.response.InternalAddressResponse;

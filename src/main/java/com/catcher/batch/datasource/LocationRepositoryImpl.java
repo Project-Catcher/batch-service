@@ -13,7 +13,8 @@ public class LocationRepositoryImpl implements LocationRepository {
     private final LocationJpaRepository locationJpaRepository;
 
     @Override
-    public Optional<Location> findByDescription(String start, String end) {
-        return locationJpaRepository.findByDescriptionStartingWithAndDescriptionEndingWith(start, end);
+    public Optional<Location> findByAreaCode(final String areaCode) {
+        return locationJpaRepository.findByAreaCode(areaCode);
     }
+
 }

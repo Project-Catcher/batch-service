@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface LocationJpaRepository extends JpaRepository<Location, Long> {
     Optional<Location> findByDescriptionStartingWithAndDescriptionEndingWith(String start, String end);
+
+    Optional<Location> findByAreaCode(String areaCode);
+
 }

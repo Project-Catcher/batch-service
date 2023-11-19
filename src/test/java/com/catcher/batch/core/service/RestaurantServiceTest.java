@@ -1,5 +1,6 @@
 package com.catcher.batch.core.service;
 
+import com.catcher.batch.core.port.AddressPort;
 import com.catcher.batch.core.port.CatcherItemRepository;
 import com.catcher.batch.core.port.CategoryRepository;
 import com.catcher.batch.core.port.LocationRepository;
@@ -18,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +37,9 @@ class RestaurantServiceTest {
 
     @Mock
     private LocationRepository locationRepository;
+
+    @Mock
+    private AddressPort addressPort;
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -102,6 +107,7 @@ class RestaurantServiceTest {
 
         Mockito.when(restaurantApiResponse.getItems()).thenReturn(List.of(restaurantItem));
         Mockito.when(categoryRepository.findByName("restaurant")).thenReturn(Optional.of(category));
-        Mockito.when(locationRepository.findByDescription("서울", "관악구")).thenReturn(Optional.of(location));
+        Mockito.when(addressPort.getAreaCodeByQuery("서울 관악구")).thenReturn(Optional.of("1000"));
+        Mockito.when(locationRepository.findByAreaCode("1000")).thenReturn(Optional.of(location));
     }
 }

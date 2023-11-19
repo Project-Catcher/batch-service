@@ -1,5 +1,6 @@
 package com.catcher.batch.core.service;
 
+import com.catcher.batch.core.port.AddressPort;
 import com.catcher.batch.core.port.CatcherItemRepository;
 import com.catcher.batch.core.port.CategoryRepository;
 import com.catcher.batch.core.port.LocationRepository;
@@ -22,6 +23,7 @@ import static com.catcher.batch.common.utils.HashCodeGenerator.hashString;
 public class CampingService {
     private final CatcherItemRepository catcherItemRepository;
     private final CategoryRepository categoryRepository;
+    private final AddressPort addressPort;
     private final LocationRepository locationRepository;
     public static final String CATEGORY_NAME = "camping";
 
@@ -38,7 +40,7 @@ public class CampingService {
         List<CatcherItem> catcherItems = campingItems.stream()
                 .filter(campingItem -> !itemMap.containsKey(hashString(CATEGORY_NAME, campingItem.getKey())))
                 .map(campingItem -> {
-                    Location location = getLocationByDescription(campingItem.getProvince(), campingItem.getCity());
+                    Location location = getLocation(campingItem.getAddress());
                     String hashKey = hashString(CATEGORY_NAME, campingItem.getKey());
 
                     itemMap.put(hashKey, campingItem.getName());
@@ -59,10 +61,8 @@ public class CampingService {
         }
     }
 
-    private Location getLocationByDescription(String province, String city) {
-        String withoutDo = province.replace("도", "");
-
-        return locationRepository.findByDescription(withoutDo, city)
-                .orElseThrow();
+    private Location getLocation(String address) {
+        final String areaCode =  addressPort.getAreaCodeByQuery(address).orElseThrow();
+        return locationRepository.findByAreaCode(areaCode).orElseThrow();
     }
 }
