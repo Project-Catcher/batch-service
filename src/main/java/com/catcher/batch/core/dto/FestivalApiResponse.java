@@ -32,7 +32,7 @@ public class FestivalApiResponse {
         private final static String CATEGORY = "festival";
 
         @JsonProperty("fstvlNm")
-        private String fetivalName;
+        private String festivalName;
 
         @JsonProperty("rdnmadr")
         private String roadAddress;
