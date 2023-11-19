@@ -62,7 +62,7 @@ public class CampingService {
     }
 
     private Location getLocation(String address) {
-        final String areaCode =  addressPort.getAreaCodeByQuery(address).orElseThrow();
+        final String areaCode = addressPort.getAreaCodeByQuery(address).orElseThrow();
         return locationRepository.findByAreaCode(areaCode).orElseThrow();
     }
 }
