@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.catcher.batch.common.utils.Hash.hashGenerator;
+import static com.catcher.batch.common.utils.Hash.isUpdated;
 import static com.catcher.batch.common.utils.HashCodeGenerator.hashString;
 
 @Service
@@ -30,25 +33,32 @@ public class RestaurantService {
         Category category = categoryRepository.findByName(CATEGORY_NAME)
                 .orElseGet(() -> categoryRepository.save(Category.create(CATEGORY_NAME)));
 
-        Map<String, String> itemMap = catcherItemRepository.findByCategory(category).stream()
-                .collect(Collectors.toMap(CatcherItem::getItemHashValue, CatcherItem::getTitle));
+        Map<String, CatcherItem> itemMap = catcherItemRepository.findByCategory(category).stream()
+                .collect(Collectors.toMap(CatcherItem::getItemHashValue, Function.identity()));
 
-        List<CatcherItem> catcherItems = restaurantApiResponse.getItems().stream()
-                .filter(item -> !itemMap.containsKey(hashString(CATEGORY_NAME, item.getKey())))
-                .map(item -> {
-                    Location location = getLocation(item.getAddress());
-                    String hashKey = hashString(CATEGORY_NAME, item.getKey());
+        List<CatcherItem> catcherItems = restaurantApiResponse.getItems().getItem().stream()
+                .map(restaurantItem -> {
+                    String hashKey = hashString(CATEGORY_NAME, restaurantItem.getKey());
+                    if (itemMap.containsKey(hashKey)) {
+                        int responseHash = hashGenerator(restaurantItem.getName(), restaurantItem.getThumbnailUrl());
+                        CatcherItem savedItem = itemMap.get(hashKey);
 
-                    itemMap.put(hashKey, item.getName());
+                        int itemHash = hashGenerator(savedItem.getTitle(), savedItem.getThumbnailUrl());
+                        if (isUpdated(itemHash, responseHash)) {
+                            CatcherItem catcherItem = createItem(hashKey, restaurantItem, category);
+                            savedItem.changeContents(catcherItem);
 
-                    return CatcherItem.builder()
-                            .category(category)
-                            .location(location)
-                            .title(item.getName())
-                            .resourceUrl(item.getResourceUrl())
-                            .itemHashValue(hashKey)
-                            .build();
+                            itemMap.put(hashKey, savedItem);
+                            return savedItem;
+                        } else {
+                            return null;
+                        }
+                    }
+                    CatcherItem newItem = createItem(hashKey, restaurantItem, category);
+                    itemMap.put(hashKey, newItem);
+                    return newItem;
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         if (!catcherItems.isEmpty()) {
@@ -56,13 +66,29 @@ public class RestaurantService {
         }
     }
 
+
     private Location getLocation(String address) {
         String[] parts = address.split("\\s+");
 
         String province = parts[0];
         String city = parts[1];
+        String withoutDo = province.replace("도", "");
 
-        return locationRepository.findByDescription(province, city)
+        return locationRepository.findByDescription(withoutDo, city)
                 .orElseThrow();
+    }
+
+    private CatcherItem createItem(
+            String hashKey, RestaurantApiResponse.RestaurantItem restaurantItem, Category category
+    ) {
+        Location location = getLocation(restaurantItem.getAddress());
+
+        return CatcherItem.builder()
+                .category(category)
+                .location(location)
+                .title(restaurantItem.getName())
+                .thumbnailUrl(restaurantItem.getThumbnailUrl())
+                .itemHashValue(hashKey)
+                .build();
     }
 }

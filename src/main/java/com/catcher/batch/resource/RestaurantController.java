@@ -27,12 +27,18 @@ public class RestaurantController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "5") Integer count
     ) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("page", page);
-        params.put("size", count);
-        RestaurantApiResponse restaurantApiResponse = catcherFeignService.parseService(params, RestaurantApiResponse.class);
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("pageNo", page);
+            params.put("numOfRows", count);
+            RestaurantApiResponse restaurantApiResponse = catcherFeignService.parseService(params, RestaurantApiResponse.class);
 
-        commandExecutor.run(new RegisterRestaurantDataCommand(restaurantService, restaurantApiResponse));
-        return CommonResponse.success(201, null);
+            commandExecutor.run(new RegisterRestaurantDataCommand(restaurantService, restaurantApiResponse));
+            return CommonResponse.success(201, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
     }
 }

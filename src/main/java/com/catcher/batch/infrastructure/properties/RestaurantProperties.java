@@ -10,11 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Map;
 
 @Component
-public class RestaurantProperties extends PropertyBase implements HeaderSupport {
+public class RestaurantProperties extends PropertyBase {
 
     @Value("${restaurant.key}")
     private String serviceKey;
@@ -30,12 +32,22 @@ public class RestaurantProperties extends PropertyBase implements HeaderSupport 
 
     @Override
     public URI getURI() {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-                .fromUriString(this.getEndPoint())
-                .queryParam("category_group_code", "FD6");
+        try {
+            String key = URLEncoder.encode(KmsUtils.decrypt(serviceKey), "UTF-8");
 
-        return this.addParams(uriBuilder)
-                .build().toUri();
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder
+                    .fromUriString(this.getEndPoint())
+                    .queryParam("MobileOS", "ETC")
+                    .queryParam("MobileApp", "AppTest")
+                    .queryParam("serviceKey", key)
+                    .queryParam("contentTypeId", "39")
+                    .queryParam("_type", "json");
+
+            return this.addParams(uriBuilder)
+                    .build(true).toUri();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private UriComponentsBuilder addParams(UriComponentsBuilder uriComponentsBuilder ) {
@@ -45,13 +57,5 @@ public class RestaurantProperties extends PropertyBase implements HeaderSupport 
                     .queryParam(key, params.get(key));
         }
         return uriComponentsBuilder;
-    }
-
-    @Override
-    public HttpHeaders addHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK " + KmsUtils.decrypt(serviceKey));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
     }
 }
