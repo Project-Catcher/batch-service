@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.catcher.batch.common.utils.Hash.hashGenerator;
 import static com.catcher.batch.common.utils.Hash.isUpdated;
@@ -36,30 +35,29 @@ public class RestaurantService {
         Map<String, CatcherItem> itemMap = catcherItemRepository.findByCategory(category).stream()
                 .collect(Collectors.toMap(CatcherItem::getItemHashValue, Function.identity()));
 
-        List<CatcherItem> catcherItems = restaurantApiResponse.getItems().getItem().stream()
-                .map(restaurantItem -> {
-                    String hashKey = hashString(CATEGORY_NAME, restaurantItem.getKey());
-                    if (itemMap.containsKey(hashKey)) {
-                        int responseHash = hashGenerator(restaurantItem.getName(), restaurantItem.getThumbnailUrl());
-                        CatcherItem savedItem = itemMap.get(hashKey);
+        List<CatcherItem> catcherItems = new ArrayList<>();
+        List<RestaurantApiResponse.RestaurantItem> restaurantItems = restaurantApiResponse.getItems().getItem();
+        for (RestaurantApiResponse.RestaurantItem restaurantItem : restaurantItems) {
+            String hashKey = hashString(CATEGORY_NAME, restaurantItem.getKey());
+            if (itemMap.containsKey(hashKey)) {
+                CatcherItem savedItem = itemMap.get(hashKey);
+                int itemHash = hashGenerator(savedItem.getTitle(), savedItem.getThumbnailUrl());
+                int responseHash = hashGenerator(restaurantItem.getName(), restaurantItem.getThumbnailUrl());
 
-                        int itemHash = hashGenerator(savedItem.getTitle(), savedItem.getThumbnailUrl());
-                        if (isUpdated(itemHash, responseHash)) {
-                            CatcherItem catcherItem = createItem(hashKey, restaurantItem, category);
-                            savedItem.changeContents(catcherItem);
+                if (isUpdated(itemHash, responseHash)) {
+                    CatcherItem changedItem = createItem(hashKey, restaurantItem, category);
+                    savedItem.changeContents(changedItem);
 
-                            itemMap.put(hashKey, savedItem);
-                            return savedItem;
-                        } else {
-                            return null;
-                        }
-                    }
-                    CatcherItem newItem = createItem(hashKey, restaurantItem, category);
-                    itemMap.put(hashKey, newItem);
-                    return newItem;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                    itemMap.put(hashKey, savedItem);
+                    catcherItems.add(savedItem);
+                }
+                continue;
+            }
+
+            CatcherItem newItem = createItem(hashKey, restaurantItem, category);
+            itemMap.put(hashKey, newItem);
+            catcherItems.add(newItem);
+        }
 
         if (!catcherItems.isEmpty()) {
             catcherItemRepository.saveAll(catcherItems);
