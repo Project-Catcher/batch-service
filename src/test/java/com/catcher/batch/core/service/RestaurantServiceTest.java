@@ -1,13 +1,13 @@
 package com.catcher.batch.core.service;
 
-import com.catcher.batch.core.port.AddressPort;
-import com.catcher.batch.core.port.CatcherItemRepository;
-import com.catcher.batch.core.port.CategoryRepository;
-import com.catcher.batch.core.port.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.RestaurantApiResponse;
+import com.catcher.batch.core.port.AddressPort;
+import com.catcher.batch.core.port.CatcherItemRepository;
+import com.catcher.batch.core.port.CategoryRepository;
+import com.catcher.batch.core.port.LocationRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
