@@ -7,11 +7,10 @@ import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
-import org.springframework.stereotype.Service;
+import io.micrometer.common.util.StringUtils;
 
 import java.util.Objects;
 
-@Service
 public class FestivalService extends BatchService {
 
     public FestivalService(CatcherItemRepository catcherItemRepository, CategoryRepository categoryRepository, LocationRepository locationRepository) {
@@ -19,19 +18,24 @@ public class FestivalService extends BatchService {
     }
 
     @Override
-    protected boolean isContentChanged(CatcherItem catcherItem, ApiResponse apiResponse) {
-        int responseHash = Objects.hash(catcherItem.getStartAt(), catcherItem.getEndAt(), catcherItem.getTitle());
-        int catcherHash = Objects.hash(apiResponse.getStartAt(), apiResponse.getEndAt(), apiResponse.getTitle());
+    protected boolean isContentChanged(CatcherItem originCatcherItem, CatcherItem newCatcherItem) {
+        int responseHash = Objects.hash(newCatcherItem.getStartAt(), newCatcherItem.getEndAt(), newCatcherItem.getTitle());
+        int catcherHash = Objects.hash(originCatcherItem.getStartAt(), originCatcherItem.getEndAt(), originCatcherItem.getTitle());
         return responseHash != catcherHash;
     }
 
     @Override
     protected String hashString(ApiResponse apiResponse) {
-        return HashCodeGenerator.hashString(apiResponse.getCategory(), apiResponse.getTitle());
+        return HashCodeGenerator.hashString(apiResponse.getHashString());
     }
 
     @Override
     protected Location getLocation(ApiResponse apiResponse) {
-        return getLocation(apiResponse.getAddress());
+        if (!StringUtils.isBlank(apiResponse.getAddress())) {
+            String[] address = apiResponse.getAddress().split(" ");
+
+            return getLocation(address[0], address[1]);
+        }
+        return null;
     }
 }

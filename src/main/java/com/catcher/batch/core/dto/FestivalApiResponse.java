@@ -1,11 +1,15 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.annotation.CatcherJson;
+import com.catcher.batch.common.utils.HashCodeGenerator;
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -25,11 +29,16 @@ public class FestivalApiResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class FestivalItem implements ApiResponse {
+        private final static String CATEGORY = "festival";
+
         @JsonProperty("fstvlNm")
-        private String fetivalName;
+        private String festivalName;
 
         @JsonProperty("rdnmadr")
-        private String address;
+        private String roadAddress;
+
+        @JsonProperty("lnmadr")
+        private String zibunAddress;
 
         @JsonProperty("fstvlCo")
         private String description;
@@ -44,58 +53,38 @@ public class FestivalApiResponse {
         private Date endDate;
 
         @Override
-        public String getCategory() {
-            return "festival";
-        }
-
-        @Override
-        public String getHashValue() {
-            return fetivalName;
-        }
-
-        @Override
-        public String getTitle() {
-            return fetivalName;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String getThumbnailUrl() {
-            return null;
-        }
-
-        @Override
-        public String getResourceUrl() {
-            return resourceUrl;
-        }
-
-        @Override
-        public ZonedDateTime getStartAt() {
-            return startDate.toInstant().atZone(zoneId);
-        }
-
-        @Override
         public ZonedDateTime getEndAt() {
-            return endDate.toInstant().atZone(zoneId);
+            return endDate == null ? null : endDate.toInstant().atZone(zoneId);
         }
 
         @Override
         public String getAddress() {
-            return address;
+            return StringUtils.isBlank(roadAddress) ? zibunAddress : roadAddress;
         }
 
         @Override
-        public String getProvince() {
-            return null;
+        public String getHashString() {
+            return HashCodeGenerator.hashString(CATEGORY, fetivalName, startDate, endDate);
         }
 
         @Override
-        public String getCity() {
-            return null;
+        public String getCategory() {
+            return CATEGORY;
+        }
+
+        @Override
+        public CatcherItem toEntity(Location location, Category category) {
+            return CatcherItem
+                    .builder()
+                    .title(fetivalName)
+                    .itemHashValue(getHashString())
+                    .startAt(startDate.toInstant().atZone(zoneId))
+                    .resourceUrl(resourceUrl)
+                    .description(description)
+                    .endAt(getEndAt())
+                    .location(location)
+                    .category(category)
+                    .build();
         }
     }
 }

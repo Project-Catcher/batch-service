@@ -1,20 +1,26 @@
 package com.catcher.batch.core.dto;
 
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.core.domain.entity.Location;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public interface ApiResponse {
     ZoneId zoneId = ZoneId.of("Asia/Seoul");
 
-    String getCategory();
-    String getHashValue();
-    String getTitle();
-    String getDescription();
-    String getThumbnailUrl();
-    String getResourceUrl();
-    ZonedDateTime getStartAt();
     ZonedDateTime getEndAt();
+
     String getAddress();
-    String getProvince();
-    String getCity();
+
+    String getHashString();
+
+    String getCategory();
+
+    CatcherItem toEntity(Location location, Category category);
+
+    default boolean isExpired() {
+        return getEndAt() != null && ZonedDateTime.now(zoneId).isAfter(getEndAt());
+    }
 }
