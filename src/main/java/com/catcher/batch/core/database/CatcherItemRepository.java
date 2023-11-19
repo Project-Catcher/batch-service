@@ -14,4 +14,6 @@ public interface CatcherItemRepository {
     Optional<CatcherItem> findByItemHashValue(String hashKey);
 
     List<CatcherItem> findByCategory(Category category);
+
+    void deleteAll(List<CatcherItem> catcherItem);
 }

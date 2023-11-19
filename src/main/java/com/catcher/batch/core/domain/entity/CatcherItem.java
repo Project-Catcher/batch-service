@@ -46,4 +46,16 @@ public class CatcherItem extends BaseTimeEntity {
 
     @Column(name = "deleted_at")
     private ZonedDateTime deletedAt;
+
+    public void changeContents(CatcherItem catcherItem) {
+        this.category = catcherItem.category;
+        this.location = catcherItem.location;
+        this.itemHashValue = catcherItem.itemHashValue;
+        this.title = catcherItem.title;
+        this.description = catcherItem.description;
+        this.thumbnailUrl = catcherItem.thumbnailUrl;
+        this.resourceUrl = catcherItem.resourceUrl;
+        this.startAt = catcherItem.startAt;
+        this.endAt = catcherItem.endAt;
+    }
 }
