@@ -1,6 +1,6 @@
 package com.catcher.batch.datasource;
 
-import com.catcher.batch.core.database.CategoryRepository;
+import com.catcher.batch.core.port.CategoryRepository;
 import com.catcher.batch.core.domain.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,8 @@
 package com.catcher.batch.core.service;
 
-import com.catcher.batch.core.database.CatcherItemRepository;
-import com.catcher.batch.core.database.CategoryRepository;
-import com.catcher.batch.core.database.LocationRepository;
+import com.catcher.batch.core.port.CatcherItemRepository;
+import com.catcher.batch.core.port.CategoryRepository;
+import com.catcher.batch.core.port.LocationRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;

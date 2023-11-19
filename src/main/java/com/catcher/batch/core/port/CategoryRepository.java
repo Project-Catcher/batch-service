@@ -1,4 +1,4 @@
-package com.catcher.batch.core.database;
+package com.catcher.batch.core.port;
 
 import com.catcher.batch.core.domain.entity.Category;
 

@@ -1,6 +1,6 @@
 package com.catcher.batch.datasource;
 
-import com.catcher.batch.core.database.CatcherItemRepository;
+import com.catcher.batch.core.port.CatcherItemRepository;
 import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.catcher.batch.datasource;
 
-import com.catcher.batch.core.database.LocationRepository;
+import com.catcher.batch.core.port.LocationRepository;
 import com.catcher.batch.core.domain.entity.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
