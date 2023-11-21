@@ -5,14 +5,11 @@ import com.catcher.batch.core.database.CatcherItemRepository;
 import com.catcher.batch.core.database.CategoryRepository;
 import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.dto.FestivalApiResponse;
-import io.netty.channel.epoll.EpollTcpInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Vector;
 
 @Component
 @Slf4j

@@ -64,7 +64,7 @@ public class FestivalApiResponse {
 
         @Override
         public String getHashString() {
-            return HashCodeGenerator.hashString(CATEGORY, fetivalName, startDate, endDate);
+            return HashCodeGenerator.hashString(CATEGORY, festivalName, startDate, endDate);
         }
 
         @Override
@@ -76,7 +76,7 @@ public class FestivalApiResponse {
         public CatcherItem toEntity(Location location, Category category) {
             return CatcherItem
                     .builder()
-                    .title(fetivalName)
+                    .title(festivalName)
                     .itemHashValue(getHashString())
                     .startAt(startDate.toInstant().atZone(zoneId))
                     .resourceUrl(resourceUrl)

@@ -15,5 +15,7 @@ public interface CatcherItemRepository {
 
     List<CatcherItem> findByCategory(Category category);
 
-    void deleteAll(List<CatcherItem> catcherItem);
+    void deleteAll(List<CatcherItem> catcherItems);
+
+    void refreshUpdateDate(List<String> itemHashValueList);
 }

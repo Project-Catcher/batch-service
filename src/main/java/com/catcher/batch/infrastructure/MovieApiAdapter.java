@@ -7,21 +7,19 @@ import com.catcher.batch.core.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-public class MovieApiAdapter implements ApiService<MovieApiResponse> {
+public class MovieApiAdapter implements ApiService<Void> {
 
     private final CatcherFeignService catcherFeignService;
     private final MovieService movieService;
 
     @Override
-    public MovieApiResponse getData() {
+    public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
         MovieApiResponse response = catcherFeignService.parseService(params, MovieApiResponse.class);
 
@@ -38,7 +36,6 @@ public class MovieApiAdapter implements ApiService<MovieApiResponse> {
 
         movieService.batch(movieList);
 
-        return response;
+        return null;
     }
-
 }

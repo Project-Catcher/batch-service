@@ -54,10 +54,7 @@ public abstract class BatchService {
 
                         return false;
                     }
-                    if (isExpired(apiResponse.getEndAt())) {
-                        return false;
-                    }
-                    return true;
+                    return !isExpired(apiResponse.getEndAt());
                 })
                 .map(apiResponse -> apiResponse.toEntity(getLocation(apiResponse), category))
                 .toList();
