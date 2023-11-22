@@ -6,4 +6,16 @@ public class HashCodeGenerator {
     public static String hashString(String category, String input) {
         return DigestUtils.sha256Hex(category + "-" + input);
     }
+
+    public static String hashString(String input) {
+        return DigestUtils.sha256Hex(input);
+    }
+
+    public static String hashString(Object... objects) {
+        StringBuilder sb = new StringBuilder();
+        for (Object object : objects) {
+            sb.append(object.toString());
+        }
+        return DigestUtils.sha256Hex(sb.toString());
+    }
 }

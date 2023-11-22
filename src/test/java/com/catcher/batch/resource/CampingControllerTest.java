@@ -37,7 +37,6 @@ class CampingControllerTest {
     @MockBean
     private CampingService campingService;
 
-
     @Autowired
     private MockMvc mockMvc;
 

@@ -2,7 +2,6 @@ package com.catcher.batch.core.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Where;
 
 import java.time.ZonedDateTime;
 
@@ -11,7 +10,6 @@ import java.time.ZonedDateTime;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "deleted_at IS NULL")
 @Table(name = "catcher_item")
 public class CatcherItem extends BaseTimeEntity {
     @Id
@@ -46,4 +44,20 @@ public class CatcherItem extends BaseTimeEntity {
 
     @Column(name = "deleted_at")
     private ZonedDateTime deletedAt;
+
+    public void softDelete(){
+        this.deletedAt = ZonedDateTime.now(ZONE);
+    }
+
+    public void changeContents(CatcherItem catcherItem) {
+        this.category = catcherItem.category;
+        this.location = catcherItem.location;
+        this.itemHashValue = catcherItem.itemHashValue;
+        this.title = catcherItem.title;
+        this.description = catcherItem.description;
+        this.thumbnailUrl = catcherItem.thumbnailUrl;
+        this.resourceUrl = catcherItem.resourceUrl;
+        this.startAt = catcherItem.startAt;
+        this.endAt = catcherItem.endAt;
+    }
 }
