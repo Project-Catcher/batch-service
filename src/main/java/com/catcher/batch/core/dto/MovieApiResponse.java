@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -90,7 +89,7 @@ public class MovieApiResponse {
         public CatcherItem toEntity(Location location, Category category) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
             LocalDate localDate = LocalDate.parse(releaseDate, dateFormatter);
-            ZonedDateTime startAt = localDate.atStartOfDay(ZoneId.of("Asia/Seoul"));
+            ZonedDateTime startAt = localDate.atStartOfDay(zoneId);
 
             return CatcherItem
                     .builder()

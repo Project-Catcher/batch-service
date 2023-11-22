@@ -46,7 +46,7 @@ public class CatcherItem extends BaseTimeEntity {
     private ZonedDateTime deletedAt;
 
     public void softDelete(){
-        this.deletedAt = ZonedDateTime.now();
+        this.deletedAt = ZonedDateTime.now(ZONE);
     }
 
     public void changeContents(CatcherItem catcherItem) {

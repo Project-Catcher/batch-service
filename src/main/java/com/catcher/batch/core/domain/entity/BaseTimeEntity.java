@@ -11,6 +11,8 @@ import java.time.ZonedDateTime;
 @MappedSuperclass
 @Getter
 public class BaseTimeEntity {
+    protected static ZoneId ZONE = ZoneId.of("Asia/Seoul");
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
@@ -19,16 +21,16 @@ public class BaseTimeEntity {
 
     @PrePersist
     private void prePersist() {
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.createdAt = ZonedDateTime.now(ZONE);
+        this.updatedAt = ZonedDateTime.now(ZONE);
     }
 
     @PreUpdate
     private void preUpdate() {
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.updatedAt = ZonedDateTime.now(ZONE);
     }
 
     public void setUpdatedAt(){
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.updatedAt = ZonedDateTime.now(ZONE);
     }
 }
