@@ -67,4 +67,40 @@ jobs:
           fi
           curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
 
-    
+          - name: Setup Kustomize
+          uses: imranismail/setup-kustomize@v1
+  
+      - name: Checkout for Kustomize repository
+        uses: actions/checkout@v2
+        with:
+          repository: Project-Catcher/batch-service-kusto
+          ref: main
+          token: ${{ env.GITHUB_TOKEN }}
+          path: batch-service-kusto
+
+      - name: Update Kustomize image
+        run: |
+          if [ "${{ env.DEPLOY_ENV }}" == "PROD" ]; then
+            KUSTOMIZE_PATH="batch-service-kusto/overlays/prd"
+          else
+            KUSTOMIZE_PATH="batch-service-kusto/overlays/dev"
+          fi
+
+          KUSTOMIZE_PATH="batch-service-kusto/overlays/dev"
+          cd $KUSTOMIZE_PATH
+          kustomize edit set image batch-svc-image="${{ env.ECR_URL }}:${{ github.sha }}"
+          kustomize build .
+          
+      - name: Commit minifest files
+        run: |
+          cd batch-service-kusto
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git commit -am "Update image tag"
+          git push -u origin main
+
+      - name: Sync ArgoCD Application
+        run: |
+          argocd app sync dev-app-batch \
+          --server argocd.dev-alltimecatcher.com \
+          --auth-token ${{ secrets.ARGOCD_TOKEN }} --insecure
