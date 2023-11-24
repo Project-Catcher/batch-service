@@ -32,7 +32,7 @@ public class RestaurantApiAdapter implements ApiService<Void> {
         IntStream.rangeClosed(2, totalPages)
                 .parallel()
                 .forEach(page -> {
-                    params.put("page", page);
+                    params.put("pageNo", page);
                     RestaurantApiResponse extraResponse = catcherFeignService.parseService(params, RestaurantApiResponse.class);
                     restaurantItemList.addAll(extraResponse.getItems().getItem());
                 });
