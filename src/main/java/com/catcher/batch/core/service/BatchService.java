@@ -1,5 +1,7 @@
 package com.catcher.batch.core.service;
 
+import com.catcher.batch.common.BaseResponseStatus;
+import com.catcher.batch.common.exception.BaseException;
 import com.catcher.batch.common.utils.HashCodeGenerator;
 import com.catcher.batch.core.database.CatcherItemRepository;
 import com.catcher.batch.core.database.CategoryRepository;
@@ -88,8 +90,10 @@ public abstract class BatchService {
     }
 
     protected Location getLocation(String address) {
-        final String areaCode = addressPort.getAreaCodeByQuery(address).orElseThrow();
-        return locationRepository.findByAreaCode(areaCode).orElseThrow();
+        final String areaCode = addressPort.getAreaCodeByQuery(address)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.FAIL_LOCATION_SERVER));
+        return locationRepository.findByAreaCode(areaCode)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.DATA_NOT_FOUND));
     }
 
     private boolean isExpired(ZonedDateTime endDateTime) {
