@@ -1,10 +1,12 @@
-package com.catcher.batch.core.service;
+package com.catcher.batch.infrastructure.service;
 
 import com.catcher.batch.common.service.CatcherJsonService;
 import com.catcher.batch.core.database.CatcherItemRepository;
 import com.catcher.batch.core.database.CategoryRepository;
 import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.dto.FestivalApiResponse;
+import com.catcher.batch.core.port.AddressPort;
+import com.catcher.batch.core.service.FestivalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +22,9 @@ public class FestivalServiceProxy extends FestivalService {
     public FestivalServiceProxy(CatcherItemRepository catcherItemRepository,
                                 CategoryRepository categoryRepository,
                                 LocationRepository locationRepository,
-                                CatcherJsonService catcherJsonService) {
-        super(catcherItemRepository, categoryRepository, locationRepository);
+                                CatcherJsonService catcherJsonService,
+                                AddressPort addressPort) {
+        super(catcherItemRepository, categoryRepository, locationRepository, addressPort);
         this.catcherJsonService = catcherJsonService;
     }
 

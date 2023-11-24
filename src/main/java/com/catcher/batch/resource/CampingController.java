@@ -2,8 +2,7 @@ package com.catcher.batch.resource;
 
 import com.catcher.batch.common.response.CommonResponse;
 import com.catcher.batch.common.service.CatcherFeignService;
-import com.catcher.batch.core.domain.CommandExecutor;
-import com.catcher.batch.core.domain.command.RegisterCampingDataCommand;
+
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.core.service.CampingService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 public class CampingController {
     private final CatcherFeignService catcherFeignService;
     private final CampingService campingService;
-    private final CommandExecutor commandExecutor;
 
     @GetMapping("/feign-batch")
     public CommonResponse<CampingApiResponse> getCampingDataByFeign(
@@ -44,7 +42,6 @@ public class CampingController {
         params.put("numOfRows", count);
         CampingApiResponse campingApiResponse = catcherFeignService.parseService(params, CampingApiResponse.class);
 
-        commandExecutor.run(new RegisterCampingDataCommand(campingService, campingApiResponse));
         return CommonResponse.success(201, null);
     }
 }

@@ -1,4 +1,4 @@
-package com.catcher.batch.infrastructure;
+package com.catcher.batch.infrastructure.adapter;
 
 import com.catcher.batch.common.service.CatcherFeignService;
 import com.catcher.batch.core.dto.MovieApiResponse;
