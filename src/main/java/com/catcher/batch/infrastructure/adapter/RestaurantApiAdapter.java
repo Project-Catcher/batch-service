@@ -5,6 +5,7 @@ import com.catcher.batch.core.dto.RestaurantApiResponse;
 import com.catcher.batch.core.service.ApiService;
 import com.catcher.batch.core.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
+@Qualifier("restaurant")
 public class RestaurantApiAdapter implements ApiService<Void> {
     private final CatcherFeignService catcherFeignService;
     private final RestaurantService restaurantService;

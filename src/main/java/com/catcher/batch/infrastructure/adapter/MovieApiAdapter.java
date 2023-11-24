@@ -5,6 +5,7 @@ import com.catcher.batch.core.dto.MovieApiResponse;
 import com.catcher.batch.core.service.ApiService;
 import com.catcher.batch.core.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
+@Qualifier("movie")
 public class MovieApiAdapter implements ApiService<Void> {
 
     private final CatcherFeignService catcherFeignService;

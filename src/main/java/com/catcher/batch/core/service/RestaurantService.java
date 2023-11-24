@@ -8,11 +8,11 @@ import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
 import com.catcher.batch.core.port.AddressPort;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Service
+@Component
 public class RestaurantService extends BatchService {
 
     public RestaurantService(
