@@ -35,7 +35,7 @@ public class RestaurantService extends BatchService {
     @Override
     protected boolean isContentChanged(CatcherItem originCatcherItem, CatcherItem newCatcherItem) {
         int responseHash = Objects.hash(newCatcherItem.getTitle(), newCatcherItem.getThumbnailUrl());
-        int catcherHash = Objects.hash(originCatcherItem.getTitle(), newCatcherItem.getThumbnailUrl());
+        int catcherHash = Objects.hash(originCatcherItem.getTitle(), originCatcherItem.getThumbnailUrl());
         return responseHash != catcherHash;
     }
 }
