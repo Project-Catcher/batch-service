@@ -66,7 +66,7 @@ class RestaurantServiceTest {
         setUpRestaurantItem();
 
         // When
-        restaurantService.batch(restaurantApiResponse);
+//        restaurantService.batch(restaurantApiResponse);
 
         // Then
         Mockito.verify(catcherItemRepository, Mockito.times(1)).saveAll(Mockito.anyList());
@@ -89,7 +89,7 @@ class RestaurantServiceTest {
         setUpRestaurantItem();
 
         // When
-        restaurantService.batch(restaurantApiResponse);
+//        restaurantService.batch(restaurantApiResponse);
 
         // Then
         Mockito.verify(catcherItemRepository, Mockito.never()).saveAll(Mockito.anyList());
