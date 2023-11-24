@@ -10,6 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CatcherServiceFeignClient {
 
     @GetMapping("/internal/address/{query}")
-    CommonResponse<InternalAddressResponse> getAddressByQuery(@PathVariable String query);
-
+    CommonResponse<InternalAddressResponse> getAddressByQuery(@PathVariable("query") String query);
 }

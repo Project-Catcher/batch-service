@@ -27,5 +27,4 @@ public class AddressAdapter implements AddressPort {
 
         return Optional.of(response.getResult().getAreaCode());
     }
-
 }
