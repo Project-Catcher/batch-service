@@ -15,6 +15,7 @@ public class RestaurantController {
     }
 
     private final ApiService apiService;
+
     @PostMapping("/batch")
     public CommonResponse<Object> batchRestaurantData() {
         apiService.getData();

@@ -1,16 +1,18 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.annotation.CatcherJson;
+import com.catcher.batch.common.utils.HashCodeGenerator;
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @CatcherJson(path = "response.body")
 public class ShoppingApiResponse {
@@ -28,7 +30,6 @@ public class ShoppingApiResponse {
     private Integer pageNo;
 
     @Getter
-    @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ShoppingItems {
         @JsonProperty("item")
@@ -36,9 +37,10 @@ public class ShoppingApiResponse {
     }
 
     @Getter
-    @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ShoppingItem {
+    public static class ShoppingItem implements ApiResponse {
+        private final static String CATEGORY = "shopping";
+
         @JsonProperty("title")
         private String name;
 
@@ -50,5 +52,32 @@ public class ShoppingApiResponse {
 
         @JsonProperty("firstimage")
         private String thumbnailUrl;
+
+        @Override
+        public ZonedDateTime getEndAt() {
+            return null;
+        }
+
+        @Override
+        public String getHashString() {
+            return HashCodeGenerator.hashString(CATEGORY, key);
+        }
+
+        @Override
+        public String getCategory() {
+            return CATEGORY;
+        }
+
+        @Override
+        public CatcherItem toEntity(Location location, Category category) {
+            return CatcherItem
+                    .builder()
+                    .title(name)
+                    .itemHashValue(getHashString())
+                    .thumbnailUrl(thumbnailUrl)
+                    .location(location)
+                    .category(category)
+                    .build();
+        }
     }
 }
