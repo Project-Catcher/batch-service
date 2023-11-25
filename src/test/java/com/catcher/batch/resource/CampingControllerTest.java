@@ -1,7 +1,6 @@
 package com.catcher.batch.resource;
 
 import com.catcher.batch.common.service.CatcherFeignService;
-import com.catcher.batch.core.domain.CommandExecutor;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.core.service.CampingService;
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +29,6 @@ class CampingControllerTest {
 
     @MockBean
     private CatcherFeignService catcherFeignService;
-
-    @MockBean
-    private CommandExecutor commandExecutor;
 
     @MockBean
     private CampingService campingService;

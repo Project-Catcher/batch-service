@@ -1,5 +1,7 @@
 package com.catcher.batch.core.service;
 
+import com.catcher.batch.common.BaseResponseStatus;
+import com.catcher.batch.common.exception.BaseException;
 import com.catcher.batch.common.utils.HashCodeGenerator;
 import com.catcher.batch.core.database.CatcherItemRepository;
 import com.catcher.batch.core.database.CategoryRepository;
@@ -8,6 +10,7 @@ import com.catcher.batch.core.domain.entity.CatcherItem;
 import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
+import com.catcher.batch.core.port.AddressPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ public abstract class BatchService {
     private final CatcherItemRepository catcherItemRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final AddressPort addressPort;
 
     @Transactional
     public void batch(List<? extends ApiResponse> apiResponses) {
@@ -85,20 +89,11 @@ public abstract class BatchService {
         return HashCodeGenerator.hashString(apiResponse.getHashString());
     }
 
-    protected Location getLocation(String province, String city) {
-        String withoutDo = province.replace("도", "");
-        return locationRepository.findByDescription(withoutDo, city)
-                .orElse(null);
-    }
-
     protected Location getLocation(String address) {
-        String[] parts = address.split("\\s+");
-
-        String province = parts[0];
-        String city = parts[1];
-
-        return locationRepository.findByDescription(province, city)
-                .orElseThrow();
+        final String areaCode = addressPort.getAreaCodeByQuery(address)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.FAIL_LOCATION_SERVER));
+        return locationRepository.findByAreaCode(areaCode)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.DATA_NOT_FOUND));
     }
 
     private boolean isExpired(ZonedDateTime endDateTime) {

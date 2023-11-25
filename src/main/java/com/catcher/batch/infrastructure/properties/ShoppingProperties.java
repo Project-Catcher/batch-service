@@ -1,12 +1,9 @@
 package com.catcher.batch.infrastructure.properties;
 
-import com.catcher.batch.core.dto.RestaurantApiResponse;
-import com.catcher.batch.core.properties.HeaderSupport;
+import com.catcher.batch.core.dto.ShoppingApiResponse;
 import com.catcher.batch.core.properties.PropertyBase;
 import com.catcher.batch.infrastructure.utils.KmsUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -16,18 +13,18 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 @Component
-public class RestaurantProperties extends PropertyBase {
+public class ShoppingProperties extends PropertyBase {
 
-    @Value("${restaurant.key}")
+    @Value("${shopping.key}")
     private String serviceKey;
 
-    public RestaurantProperties(@Value("${restaurant.baseUrl}") String endPoint) {
+    public ShoppingProperties(@Value("${shopping.baseUrl}") String endPoint) {
         super(endPoint);
     }
 
     @Override
     public boolean support(Class<?> clazz) {
-        return clazz.isAssignableFrom(RestaurantApiResponse.class);
+        return clazz.isAssignableFrom(ShoppingApiResponse.class);
     }
 
     @Override
@@ -40,7 +37,7 @@ public class RestaurantProperties extends PropertyBase {
                     .queryParam("MobileOS", "ETC")
                     .queryParam("MobileApp", "AppTest")
                     .queryParam("serviceKey", key)
-                    .queryParam("contentTypeId", "39")
+                    .queryParam("contentTypeId", "38")
                     .queryParam("_type", "json");
 
             return this.addParams(uriBuilder)
