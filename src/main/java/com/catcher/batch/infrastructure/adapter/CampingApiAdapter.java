@@ -20,7 +20,7 @@ public class CampingApiAdapter implements ApiService<Void> {
     private final CampingService campingService;
 
     @Override
-    public <T> T getData() {
+    public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
         CampingApiResponse response = catcherFeignService.parseService(params, CampingApiResponse.class);
 
