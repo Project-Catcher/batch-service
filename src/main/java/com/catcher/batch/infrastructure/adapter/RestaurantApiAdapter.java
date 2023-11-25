@@ -20,7 +20,7 @@ public class RestaurantApiAdapter implements ApiService<Void> {
     private final RestaurantService restaurantService;
 
     @Override
-    public <T> T getData() {
+    public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
         RestaurantApiResponse response = catcherFeignService.parseService(params, RestaurantApiResponse.class);
 

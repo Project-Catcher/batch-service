@@ -20,7 +20,7 @@ public class ShoppingApiAdapter implements ApiService<Void> {
     private final ShoppingService shoppingService;
 
     @Override
-    public <T> T getData() {
+    public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
         ShoppingApiResponse response = catcherFeignService.parseService(params, ShoppingApiResponse.class);
 
