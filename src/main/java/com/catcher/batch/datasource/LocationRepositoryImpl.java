@@ -16,4 +16,9 @@ public class LocationRepositoryImpl implements LocationRepository {
     public Optional<Location> findByDescription(String start, String end) {
         return locationJpaRepository.findByDescriptionStartingWithAndDescriptionEndingWith(start, end);
     }
+
+    @Override
+    public Optional<Location> findByAreaCode(final String areaCode) {
+        return locationJpaRepository.findByAreaCode(areaCode);
+    }
 }

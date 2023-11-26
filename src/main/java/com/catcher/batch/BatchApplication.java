@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.catcher.batch.resource.external")
+@EnableFeignClients(basePackages = {"com.catcher.batch.resource.external", "com.catcher.batch.infrastructure"})
 @EnableJpaAuditing
 @EnableScheduling
 public class BatchApplication {

@@ -15,10 +15,10 @@ import java.util.List;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @CatcherJson(path = "response.body")
-public class RestaurantApiResponse {
+public class ShoppingApiResponse {
 
     @JsonProperty("items")
-    private RestaurantItems items;
+    private ShoppingItems items;
 
     @JsonProperty("totalCount")
     private Integer totalCount;
@@ -31,15 +31,15 @@ public class RestaurantApiResponse {
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class RestaurantItems {
+    public static class ShoppingItems {
         @JsonProperty("item")
-        private List<RestaurantItem> item;
+        private List<ShoppingItem> item;
     }
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class RestaurantItem implements ApiResponse {
-        private final static String CATEGORY = "restaurant";
+    public static class ShoppingItem implements ApiResponse {
+        private final static String CATEGORY = "shopping";
 
         @JsonProperty("title")
         private String name;
