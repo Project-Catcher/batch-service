@@ -5,6 +5,7 @@ import com.catcher.batch.core.dto.MovieApiResponse;
 import com.catcher.batch.core.service.ApiService;
 import com.catcher.batch.core.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class MovieApiAdapter implements ApiService<Void> {
     private final MovieService movieService;
 
     @Override
+    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
         MovieApiResponse response = catcherFeignService.parseService(params, MovieApiResponse.class);
