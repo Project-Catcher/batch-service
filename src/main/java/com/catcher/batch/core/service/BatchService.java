@@ -1,7 +1,5 @@
 package com.catcher.batch.core.service;
 
-import com.catcher.batch.common.BaseResponseStatus;
-import com.catcher.batch.common.exception.BaseException;
 import com.catcher.batch.common.utils.HashCodeGenerator;
 import com.catcher.batch.core.database.CatcherItemRepository;
 import com.catcher.batch.core.database.CategoryRepository;
