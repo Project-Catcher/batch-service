@@ -91,9 +91,9 @@ public abstract class BatchService {
 
     protected Location getLocation(String address) {
         final String areaCode = addressPort.getAreaCodeByQuery(address)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.FAIL_LOCATION_SERVER));
+                .orElse(null);
         return locationRepository.findByAreaCode(areaCode)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.DATA_NOT_FOUND));
+                .orElse(null);
     }
 
     private boolean isExpired(ZonedDateTime endDateTime) {
