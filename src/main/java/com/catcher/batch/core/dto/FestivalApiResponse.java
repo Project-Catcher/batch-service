@@ -28,7 +28,7 @@ public class FestivalApiResponse {
     private Integer pageNo;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class FestivalItem implements ApiResponse {
+    public static class FestivalItem implements ApiResponse {
         private final static String CATEGORY = "festival";
 
         @JsonProperty("fstvlNm")
