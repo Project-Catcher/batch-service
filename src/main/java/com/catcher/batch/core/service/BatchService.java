@@ -64,7 +64,7 @@ public abstract class BatchService {
                 .toList();
 
         if (!saveItems.isEmpty()) {
-            log.info("변경된 아이템 개수 : {}, 카테고리 = {}", saveItems.size(), category.getName());
+            log.info("새로 추가된 아이템 개수 : {}, 카테고리 = {}", saveItems.size(), category.getName());
             catcherItemRepository.saveAll(saveItems);
         }
 

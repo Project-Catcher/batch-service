@@ -9,9 +9,14 @@ import com.catcher.batch.core.domain.entity.Location;
 import com.catcher.batch.core.dto.ApiResponse;
 import com.catcher.batch.core.port.AddressPort;
 import io.micrometer.common.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
+@Service
 public class FestivalService extends BatchService {
 
     public FestivalService(CatcherItemRepository catcherItemRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, AddressPort addressPort) {
@@ -20,8 +25,8 @@ public class FestivalService extends BatchService {
 
     @Override
     protected boolean isContentChanged(CatcherItem originCatcherItem, CatcherItem newCatcherItem) {
-        int responseHash = Objects.hash(newCatcherItem.getStartAt(), newCatcherItem.getEndAt(), newCatcherItem.getTitle());
-        int catcherHash = Objects.hash(originCatcherItem.getStartAt(), originCatcherItem.getEndAt(), originCatcherItem.getTitle());
+        int responseHash = Objects.hash(newCatcherItem.getStartAt().toLocalDate(), newCatcherItem.getEndAt().toLocalDate(), newCatcherItem.getTitle());
+        int catcherHash = Objects.hash(originCatcherItem.getStartAt().toLocalDate(), originCatcherItem.getEndAt().toLocalDate(), originCatcherItem.getTitle());
         return responseHash != catcherHash;
     }
 
