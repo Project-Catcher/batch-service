@@ -18,21 +18,23 @@ import java.util.stream.IntStream;
 public class CampingApiAdapter implements ApiService<Void> {
     private final CatcherFeignService catcherFeignService;
     private final CampingService campingService;
+    private final String pageNumber = "200";
 
     @Override
     public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
+        params.put("numOfRows", pageNumber);
         CampingApiResponse response = catcherFeignService.parseService(params, CampingApiResponse.class);
-
+        
         List<CampingApiResponse.CampingItem> campingItemList = response.getItems().getItem();
         int totalCount = response.getTotalCount();
         int numOfRows = response.getNumOfRows();
         int totalPages = (totalCount / numOfRows) + ((totalCount % numOfRows) == 0 ? 0 : 1);
 
         IntStream.rangeClosed(2, totalPages)
-                .parallel()
                 .forEach(page -> {
                     params.put("pageNo", page);
+                    params.put("numOfRows", pageNumber);
                     CampingApiResponse extraResponse = catcherFeignService.parseService(params, CampingApiResponse.class);
                     campingItemList.addAll(extraResponse.getItems().getItem());
                 });

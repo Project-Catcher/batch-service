@@ -18,10 +18,12 @@ import java.util.stream.IntStream;
 public class ShoppingApiAdapter implements ApiService<Void> {
     private final CatcherFeignService catcherFeignService;
     private final ShoppingService shoppingService;
+    private final String pageNumber = "2000";
 
     @Override
     public Void getData() {
         HashMap<String, Object> params = new HashMap<>();
+        params.put("numOfRows", pageNumber);
         ShoppingApiResponse response = catcherFeignService.parseService(params, ShoppingApiResponse.class);
 
         List<ShoppingApiResponse.ShoppingItem> shoppingItemList = response.getItems().getItem();
@@ -30,9 +32,9 @@ public class ShoppingApiAdapter implements ApiService<Void> {
         int totalPages = (totalCount / numOfRows) + ((totalCount % numOfRows) == 0 ? 0 : 1);
 
         IntStream.rangeClosed(2, totalPages)
-                .parallel()
                 .forEach(page -> {
                     params.put("pageNo", page);
+                    params.put("numOfRows", pageNumber);
                     ShoppingApiResponse extraResponse = catcherFeignService.parseService(params, ShoppingApiResponse.class);
                     shoppingItemList.addAll(extraResponse.getItems().getItem());
                 });
