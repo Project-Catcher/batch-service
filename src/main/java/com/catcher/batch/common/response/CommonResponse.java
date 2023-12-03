@@ -3,7 +3,9 @@ package com.catcher.batch.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(force = true)
 @Getter
 public class CommonResponse<T> {
     private final int code;

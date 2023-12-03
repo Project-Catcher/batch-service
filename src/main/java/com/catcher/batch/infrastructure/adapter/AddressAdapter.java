@@ -18,13 +18,18 @@ public class AddressAdapter implements AddressPort {
 
     @Override
     public Optional<String> getAreaCodeByQuery(final String query) {
-        final CommonResponse<InternalAddressResponse> response =
-                catcherServiceFeignClient.getAddressByQuery(query);
+        // TODO 덕주님 error decorder 처리해주세요.
+        try {
+            final CommonResponse<InternalAddressResponse> response =
+                    catcherServiceFeignClient.getAddressByQuery(query);
 
-        if (!response.isSuccess()) {
+            if (!response.isSuccess()) {
+                return Optional.empty();
+            }
+
+            return Optional.of(response.getResult().getAreaCode());
+        } catch (Exception e) {
             return Optional.empty();
         }
-
-        return Optional.of(response.getResult().getAreaCode());
     }
 }
