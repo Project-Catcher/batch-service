@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,8 +46,10 @@ public class MovieService {
         List<CatcherItem> newItemList = new ArrayList<>();
         List<String> itemHashValueList = new ArrayList<>();
 
+        Set<String> singleMovieItemFromApi = new HashSet<>();
+
         for(MovieApiResponse.MovieItem response : (List<MovieApiResponse.MovieItem>)responses){
-            if(response.getReleaseDate().isBlank() || response.getReleaseDate().isEmpty()) continue;
+            if(response.getReleaseDate() == null || response.getReleaseDate().isEmpty()) continue;
 
             String apiHashKey = response.getHashString();
             CatcherItem item = response.toEntity(null, category);
@@ -58,7 +58,10 @@ public class MovieService {
                 itemHashValueList.add(item.getItemHashValue());
             }
             else{
-                newItemList.add(item);
+                if(!singleMovieItemFromApi.contains(item.getItemHashValue())){
+                    newItemList.add(item);
+                    singleMovieItemFromApi.add(item.getItemHashValue());
+                }
             }
         }
 
