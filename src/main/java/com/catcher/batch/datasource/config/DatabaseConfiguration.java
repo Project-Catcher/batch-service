@@ -52,7 +52,7 @@ public class DatabaseConfiguration {
 
     @Bean
     public DataSource dataSource() throws Exception {
-        // KMS 활용한 연결
+
         JSch jsch = new JSch();
         Session session = jsch.getSession(
                 KmsUtils.decrypt(sshUsername),
@@ -66,14 +66,12 @@ public class DatabaseConfiguration {
         int assignedPort = session.setPortForwardingL(0,
                 KmsUtils.decrypt(originUrl),
                 localPort
-        ); // TODO: lport 값(현재 0)은 추후 서버 올릴때는 지정해줘야함
+        );
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(KmsUtils.decrypt(databaseUrl).replace(Integer.toString(localPort), Integer.toString(assignedPort)));
-        dataSource.setUsername(KmsUtils.decrypt(databaseUsername));
-        dataSource.setPassword(KmsUtils.decrypt(databasePassword));
-
-        return dataSource;
+        return DataSourceBuilder.create()
+                .url(KmsUtils.decrypt(databaseUrl).replace(Integer.toString(localPort), Integer.toString(assignedPort)))
+                .username(KmsUtils.decrypt(databaseUsername))
+                .password(KmsUtils.decrypt(databasePassword))
+                .build();
     }
 }
