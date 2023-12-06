@@ -61,7 +61,7 @@ jobs:
       - name: notification to swit
         uses: roharon/action-swit@v1
         with:
-          webhooks_url: ${{ env.webhook_url }}
+          webhooks_url: ${{ env.WEBHOOK_URL }}
           MESSAGE: "🏷 ${{ job.status }} 백엔드 ECR 도커파일 업로드 : Batch-service - by ${{ github.actor }}"
 
       - name: Setup Kustomize
