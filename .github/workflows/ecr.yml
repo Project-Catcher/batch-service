@@ -59,8 +59,8 @@ jobs:
 
       - name: Publish Image to ECR(BATCH-SERVICE)
         run: |
-          docker tag batch-service:latest ${{ env.ECR_URL }}:batch-service
-          docker push ${{ env.ECR_URL }}:batch-service
+          docker tag batch-service:latest ${{ env.ECR_URL }}:${{ github.sha }}
+          docker push ${{ env.ECR_URL }}:${{ github.sha }}
 
       - name: Send Notification
         if: ${{ always() }}
@@ -72,4 +72,28 @@ jobs:
           fi
           curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
 
-    
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+
+      - name: Checkout for Kustomize repository
+        uses: actions/checkout@v2
+        with:
+          repository: Project-Catcher/batch-service-kusto
+          ref: main
+          token: ${{ env.GITHUB_TOKEN }}
+          path: batch-service-kusto
+
+      - name: Update Kustomize image
+        run: |
+          KUSTOMIZE_PATH="batch-service-kusto/dev"
+          cd $KUSTOMIZE_PATH
+          kustomize edit set image batch-svc-image="${{ env.ECR_URL }}:${{ github.sha }}"
+          kustomize build .
+
+      - name: Commit minifest files
+        run: |
+          cd batch-service-kusto
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git commit -am "update : image tag"
+          git push -u origin main
