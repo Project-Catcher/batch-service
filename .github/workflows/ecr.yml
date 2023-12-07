@@ -5,13 +5,14 @@ on:
     branches: [ "main", "dev" ]
 
 env:
-  # ECR_URL: ${{ secrets.ECR_REPO_DEV }}
   AWS_DEV_BATCH_ECR: ${{ secrets.AWS_DEV_BATCH_ECR }}
   AWS_PRD_BATCH_ECR: ${{ secrets.AWS_PRD_BATCH_ECR }}
-  ROLE_ARN: ${{ secrets.OIDC_ROLE }}
+  GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
   AWS_REGION: ${{ secrets.AWS_REGION }}
   WEBHOOK_URL: ${{ secrets.WEBHOOK }}
   DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'PROD' || 'DEV' }}
+  # ECR_URL: ${{ secrets.ECR_REPO_DEV }}
+  # ROLE_ARN: ${{ secrets.OIDC_ROLE }}
 
 permissions:
   id-token: write
@@ -83,7 +84,7 @@ jobs:
         with:
           repository: Project-Catcher/batch-service-kusto
           ref: main
-          token: ${{ env.GIT_TOKEN }}
+          token: ${{ secret.GIT_TOKEN }}
           path: batch-service-kusto
 
       - name: Update Kustomize image
