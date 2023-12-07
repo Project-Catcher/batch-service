@@ -77,21 +77,11 @@ jobs:
 
       - name: Update Kustomize image
         run: |
-          KUSTOMIZE_PATH="batch-service-kusto/dev"
-          cd $KUSTOMIZE_PATH
-          kustomize edit set image batch-svc-image="${{ env.ECR_URL }}:${{ github.sha }}"
-          kustomize build .
+          if [[ ${{ job.status }} == "success" ]]; then
+            MESSAGE="✅ ${{ job.status }} 백엔드 ECR 도커파일 업로드 성공: batch-service - by ${{ github.actor }}"
+          else
+            MESSAGE="❌ ${{ job.status }} 백엔드 ECR 도커파일 업로드 실패: batch-service - by ${{ github.actor }}"
+          fi
+          curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
 
-      - name: Commit minifest files
-        run: |
-          cd batch-service-kusto
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-          git commit -am "update : image tag"
-          git push -u origin main
-
-      - name: Sync ArgoCD Application
-        run: |
-          argocd app sync dev-app-core \
-          --server argocd.dev-alltimecatcher.com \
-          --auth-token ${{ secrets.ARGOCD_TOKEN }} --insecure
+    
