@@ -1,57 +1,83 @@
 package com.catcher.batch.core.dto;
 
 import com.catcher.batch.annotation.CatcherJson;
+import com.catcher.batch.common.utils.HashCodeGenerator;
+import com.catcher.batch.core.domain.entity.CatcherItem;
+import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@CatcherJson(path = "")
+@CatcherJson(path = "response.body")
 public class RestaurantApiResponse {
 
-    @JsonProperty("meta")
-    private Meta meta;
+    @JsonProperty("items")
+    private RestaurantItems items;
 
-    @JsonProperty("documents")
-    private List<RestaurantItem> items;
+    @JsonProperty("totalCount")
+    private Integer totalCount;
+
+    @JsonProperty("numOfRows")
+    private Integer numOfRows;
+
+    @JsonProperty("pageNo")
+    private Integer pageNo;
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Meta {
-
-        @JsonProperty("pageable_count")
-        private int pageableCount;
-
-        @JsonProperty("total_count")
-        private int totalCount;
-
-        @JsonProperty("is_end")
-        private boolean isEnd;
+    public static class RestaurantItems {
+        @JsonProperty("item")
+        private List<RestaurantItem> item;
     }
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class RestaurantItem {
+    public static class RestaurantItem implements ApiResponse {
+        private final static String CATEGORY = "restaurant";
 
-        @JsonProperty("id")
-        private String key;
-
-        @JsonProperty("place_name")
+        @JsonProperty("title")
         private String name;
 
-        @JsonProperty("place_url")
-        private String resourceUrl;
-
-        @JsonProperty("address_name")
+        @JsonProperty("addr1")
         private String address;
 
-        @JsonProperty("x")
-        private String latitude;
+        @JsonProperty("contentid")
+        private String key;
 
-        @JsonProperty("y")
-        private String longitude;
+        @JsonProperty("firstimage")
+        private String thumbnailUrl;
+
+        @Override
+        public ZonedDateTime getEndAt() {
+            return null;
+        }
+
+        @Override
+        public String getHashString() {
+            return HashCodeGenerator.hashString(CATEGORY, key);
+        }
+
+        @Override
+        public String getCategory() {
+            return CATEGORY;
+        }
+
+        @Override
+        public CatcherItem toEntity(Location location, Category category) {
+            return CatcherItem
+                    .builder()
+                    .title(name)
+                    .itemHashValue(getHashString())
+                    .thumbnailUrl(thumbnailUrl)
+                    .location(location)
+                    .category(category)
+                    .build();
+        }
     }
 }

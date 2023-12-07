@@ -1,38 +1,25 @@
 package com.catcher.batch.resource;
 
 import com.catcher.batch.common.response.CommonResponse;
-import com.catcher.batch.common.service.CatcherFeignService;
-import com.catcher.batch.core.domain.CommandExecutor;
-import com.catcher.batch.core.domain.command.RegisterRestaurantDataCommand;
-import com.catcher.batch.core.dto.RestaurantApiResponse;
-import com.catcher.batch.core.service.RestaurantService;
-import lombok.RequiredArgsConstructor;
+import com.catcher.batch.core.service.ApiService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
-    private final CatcherFeignService catcherFeignService;
-    private final RestaurantService restaurantService;
-    private final CommandExecutor commandExecutor;
+    RestaurantController(@Qualifier("restaurant") ApiService apiService) {
+        this.apiService = apiService;
+    }
+
+    private final ApiService apiService;
 
     @PostMapping("/batch")
-    public CommonResponse<Object> batchRestaurantData(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "5") Integer count
-    ) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("page", page);
-        params.put("size", count);
-        RestaurantApiResponse restaurantApiResponse = catcherFeignService.parseService(params, RestaurantApiResponse.class);
+    public CommonResponse<Object> batchRestaurantData() {
+        apiService.getData();
 
-        commandExecutor.run(new RegisterRestaurantDataCommand(restaurantService, restaurantApiResponse));
         return CommonResponse.success(201, null);
     }
 }

@@ -7,64 +7,60 @@ import com.catcher.batch.core.domain.entity.Category;
 import com.catcher.batch.core.domain.entity.Location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @CatcherJson(path = "response.body")
-public class FestivalApiResponse {
+public class ShoppingApiResponse {
+
     @JsonProperty("items")
-    private List<FestivalItem> items;
+    private ShoppingItems items;
+
     @JsonProperty("totalCount")
     private Integer totalCount;
+
     @JsonProperty("numOfRows")
     private Integer numOfRows;
+
     @JsonProperty("pageNo")
     private Integer pageNo;
 
+    @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FestivalItem implements ApiResponse {
-        private final static String CATEGORY = "festival";
+    public static class ShoppingItems {
+        @JsonProperty("item")
+        private List<ShoppingItem> item;
+    }
 
-        @JsonProperty("fstvlNm")
-        private String festivalName;
+    @Getter
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ShoppingItem implements ApiResponse {
+        private final static String CATEGORY = "shopping";
 
-        @JsonProperty("rdnmadr")
-        private String roadAddress;
+        @JsonProperty("title")
+        private String name;
 
-        @JsonProperty("lnmadr")
-        private String zibunAddress;
+        @JsonProperty("addr1")
+        private String address;
 
-        @JsonProperty("fstvlCo")
-        private String description;
+        @JsonProperty("contentid")
+        private String key;
 
-        @JsonProperty("homepageUrl")
-        private String resourceUrl;
-
-        @JsonProperty("fstvlStartDate")
-        private Date startDate;
-
-        @JsonProperty("fstvlEndDate")
-        private Date endDate;
+        @JsonProperty("firstimage")
+        private String thumbnailUrl;
 
         @Override
         public ZonedDateTime getEndAt() {
-            return endDate == null ? null : endDate.toInstant().atZone(zoneId);
-        }
-
-        @Override
-        public String getAddress() {
-            return StringUtils.isBlank(roadAddress) ? zibunAddress : roadAddress;
+            return null;
         }
 
         @Override
         public String getHashString() {
-            return HashCodeGenerator.hashString(CATEGORY, festivalName, startDate, endDate);
+            return HashCodeGenerator.hashString(CATEGORY, key);
         }
 
         @Override
@@ -76,12 +72,9 @@ public class FestivalApiResponse {
         public CatcherItem toEntity(Location location, Category category) {
             return CatcherItem
                     .builder()
-                    .title(festivalName)
+                    .title(name)
                     .itemHashValue(getHashString())
-                    .startAt(startDate.toInstant().atZone(zoneId))
-                    .resourceUrl(resourceUrl)
-                    .description(description)
-                    .endAt(getEndAt())
+                    .thumbnailUrl(thumbnailUrl)
                     .location(location)
                     .category(category)
                     .build();

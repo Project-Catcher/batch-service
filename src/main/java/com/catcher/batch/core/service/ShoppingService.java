@@ -10,12 +10,12 @@ import com.catcher.batch.core.port.AddressPort;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.*;
 
 @Component
-public class CampingService extends BatchService {
+public class ShoppingService extends BatchService {
 
-    public CampingService(
+    public ShoppingService(
             CatcherItemRepository catcherItemRepository,
             CategoryRepository categoryRepository,
             LocationRepository locationRepository,
@@ -34,8 +34,8 @@ public class CampingService extends BatchService {
 
     @Override
     protected boolean isContentChanged(CatcherItem originCatcherItem, CatcherItem newCatcherItem) {
-        int responseHash = Objects.hash(newCatcherItem.getTitle(), newCatcherItem.getThumbnailUrl(), newCatcherItem.getResourceUrl(), newCatcherItem.getDescription());
-        int catcherHash = Objects.hash(originCatcherItem.getTitle(), originCatcherItem.getThumbnailUrl(), originCatcherItem.getResourceUrl(), originCatcherItem.getDescription());
+        int responseHash = Objects.hash(newCatcherItem.getTitle(), newCatcherItem.getThumbnailUrl());
+        int catcherHash = Objects.hash(originCatcherItem.getTitle(), originCatcherItem.getThumbnailUrl());
         return responseHash != catcherHash;
     }
 }
