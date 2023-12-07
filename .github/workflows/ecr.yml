@@ -72,7 +72,7 @@ jobs:
         with:
           repository: Project-Catcher/batch-service-kusto
           ref: main
-          token: ${{ env.GITHUB_TOKEN }}
+          token: ${{ env.GIT_TOKEN }}
           path: batch-service-kusto
 
       - name: Update Kustomize image
