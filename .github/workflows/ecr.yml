@@ -5,7 +5,9 @@ on:
     branches: [ "main", "dev" ]
 
 env:
-  ECR_URL: ${{ secrets.ECR_REPO_DEV }}
+  # ECR_URL: ${{ secrets.ECR_REPO_DEV }}
+  AWS_DEV_BATCH_ECR: ${{ secrets.AWS_DEV_BATCH_ECR }}
+  AWS_PRD_BATCH_ECR: ${{ secrets.AWS_PRD_BATCH_ECR }}
   ROLE_ARN: ${{ secrets.OIDC_ROLE }}
   AWS_REGION: ${{ secrets.AWS_REGION }}
   WEBHOOK_URL: ${{ secrets.WEBHOOK }}
@@ -46,8 +48,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-session-name: GitHubActions
-          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -55,14 +57,23 @@ jobs:
 
       - name: Publish Image to ECR(BATCH-SERVICE)
         run: |
-          docker tag batch-service:latest ${{ env.ECR_URL }}:${{ github.sha }}
-          docker push ${{ env.ECR_URL }}:${{ github.sha }}
+          if [ "${{ env.DEPLOY_ENV }}" == "PROD" ]; then
+            docker tag batch-service:latest ${{ env.AWS_PRD_BATCH_ECR }}:${{ github.sha }}
+            docker push ${{ env.AWS_PRD_BATCH_ECR }}:${{ github.sha }}
+          else
+            docker tag batch-service:latest ${{ env.AWS_DEV_BATCH_ECR }}:${{ github.sha }}
+            docker push ${{ env.AWS_DEV_BATCH_ECR }}:${{ github.sha }}
+          fi
 
-      - name: notification to swit
-        uses: roharon/action-swit@v1
-        with:
-          webhooks_url: ${{ env.WEBHOOK_URL }}
-          MESSAGE: "🏷 ${{ job.status }} 백엔드 ECR 도커파일 업로드 : Batch-service - by ${{ github.actor }}"
+      - name: Send Notification
+        if: ${{ always() }}
+        run: |
+          if [[ ${{ job.status }} == "success" ]]; then
+            MESSAGE="✅ ${{ job.status }} 백엔드 ECR 도커파일 업로드 성공: batch-service - by ${{ github.actor }}"
+          else
+            MESSAGE="❌ ${{ job.status }} 백엔드 ECR 도커파일 업로드 실패: batch-service - by ${{ github.actor }}"
+          fi
+          curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
 
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
@@ -77,11 +88,12 @@ jobs:
 
       - name: Update Kustomize image
         run: |
-          if [[ ${{ job.status }} == "success" ]]; then
-            MESSAGE="✅ ${{ job.status }} 백엔드 ECR 도커파일 업로드 성공: batch-service - by ${{ github.actor }}"
+          if [ "${{ env.DEPLOY_ENV }}" == "PROD" ]; then
+            KUSTOMIZE_PATH="batch-service-kusto/overlays/prd" && cd $KUSTOMIZE_PATH
+            kustomize edit set image app-batch-img="${{ env.AWS_PRD_BATCH_ECR }}:${{ github.sha }}"
           else
-            MESSAGE="❌ ${{ job.status }} 백엔드 ECR 도커파일 업로드 실패: batch-service - by ${{ github.actor }}"
+            KUSTOMIZE_PATH="batch-service-kusto/overlays/dev" && cd $KUSTOMIZE_PATH
+            kustomize edit set image app-batch-img="${{ env.AWS_DEV_BATCH_ECR }}:${{ github.sha }}"
           fi
-          curl -X POST -H "Content-Type: application/json" --data "{\"text\":\"${MESSAGE}\"}" ${{ env.WEBHOOK_URL }}
 
-    
+          kustomize build .
