@@ -45,7 +45,7 @@ public class KmsUtils {
         }
     }
 
-    public static String decrypt(String cipherBase64) {
+    public String decrypt(String cipherBase64) {
         try {
             AWSKMS kmsClient = AWSKMSClientBuilder.standard()
                     .withRegion(Regions.AP_NORTHEAST_2)

@@ -15,8 +15,11 @@ public class FestivalProperties extends PropertyBase {
     @Value("${festival.key}")
     private String serviceKey;
 
-    public FestivalProperties(@Value("${festival.baseUrl}") String endPoint) {
+    private final KmsUtils kmsUtils;
+
+    public FestivalProperties(@Value("${festival.baseUrl}") String endPoint, final KmsUtils kmsUtils) {
         super(endPoint);
+        this.kmsUtils = kmsUtils;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class FestivalProperties extends PropertyBase {
     public URI getURI() {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder
                 .fromUriString(this.getEndPoint())
-                .queryParam("serviceKey", KmsUtils.decrypt(serviceKey));
+                .queryParam("serviceKey", kmsUtils.decrypt(serviceKey));
 
         return this.addParams(uriBuilder)
                 .build().toUri();

@@ -19,8 +19,11 @@ public class MovieProperties extends PropertyBase implements HeaderSupport {
     @Value("${movie.key}")
     private String serviceKey;
 
-    public MovieProperties(@Value("${movie.baseUrl}") String endPoint) {
+    private final KmsUtils kmsUtils;
+
+    public MovieProperties(@Value("${movie.baseUrl}") String endPoint, final KmsUtils kmsUtils) {
         super(endPoint);
+        this.kmsUtils = kmsUtils;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class MovieProperties extends PropertyBase implements HeaderSupport {
     @Override
     public HttpHeaders addHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + KmsUtils.decrypt(serviceKey));
+        headers.set("Authorization", "Bearer " + kmsUtils.decrypt(serviceKey));
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }

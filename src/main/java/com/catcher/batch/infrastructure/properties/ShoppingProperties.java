@@ -18,8 +18,11 @@ public class ShoppingProperties extends PropertyBase {
     @Value("${shopping.key}")
     private String serviceKey;
 
-    public ShoppingProperties(@Value("${shopping.baseUrl}") String endPoint) {
+    private final KmsUtils kmsUtils;
+
+    public ShoppingProperties(@Value("${shopping.baseUrl}") String endPoint, final KmsUtils kmsUtils) {
         super(endPoint);
+        this.kmsUtils = kmsUtils;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class ShoppingProperties extends PropertyBase {
     @Override
     public URI getURI() {
         try {
-            String key = URLEncoder.encode(KmsUtils.decrypt(serviceKey), "UTF-8");
+            String key = URLEncoder.encode(kmsUtils.decrypt(serviceKey), "UTF-8");
 
             UriComponentsBuilder uriBuilder = UriComponentsBuilder
                     .fromUriString(this.getEndPoint())
