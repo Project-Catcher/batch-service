@@ -3,6 +3,7 @@ package com.catcher.batch.infrastructure.properties;
 import com.catcher.batch.core.dto.CampingApiResponse;
 import com.catcher.batch.core.properties.PropertyBase;
 import com.catcher.batch.infrastructure.utils.KmsUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,8 +19,11 @@ public class CampingProperties extends PropertyBase {
     @Value("${camping.key}")
     private String serviceKey;
 
-    public CampingProperties(@Value("${camping.baseUrl}") String endPoint) {
+    private final KmsUtils kmsUtils;
+
+    public CampingProperties(@Value("${camping.baseUrl}") String endPoint, final KmsUtils kmsUtils) {
         super(endPoint);
+        this.kmsUtils = kmsUtils;
     }
 
     @Override
@@ -30,7 +34,7 @@ public class CampingProperties extends PropertyBase {
     @Override
     public URI getURI() {
         try {
-            String key = URLEncoder.encode(KmsUtils.decrypt(serviceKey), "UTF-8");
+            String key = URLEncoder.encode(kmsUtils.decrypt(serviceKey), "UTF-8");
 
             UriComponentsBuilder uriBuilder = UriComponentsBuilder
                     .fromUriString(this.getEndPoint())

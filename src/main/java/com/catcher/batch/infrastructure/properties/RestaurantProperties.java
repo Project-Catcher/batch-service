@@ -1,12 +1,9 @@
 package com.catcher.batch.infrastructure.properties;
 
 import com.catcher.batch.core.dto.RestaurantApiResponse;
-import com.catcher.batch.core.properties.HeaderSupport;
 import com.catcher.batch.core.properties.PropertyBase;
 import com.catcher.batch.infrastructure.utils.KmsUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -21,8 +18,11 @@ public class RestaurantProperties extends PropertyBase {
     @Value("${restaurant.key}")
     private String serviceKey;
 
-    public RestaurantProperties(@Value("${restaurant.baseUrl}") String endPoint) {
+    private final KmsUtils kmsUtils;
+
+    public RestaurantProperties(@Value("${restaurant.baseUrl}") String endPoint, final KmsUtils kmsUtils) {
         super(endPoint);
+        this.kmsUtils = kmsUtils;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class RestaurantProperties extends PropertyBase {
     @Override
     public URI getURI() {
         try {
-            String key = URLEncoder.encode(KmsUtils.decrypt(serviceKey), "UTF-8");
+            String key = URLEncoder.encode(kmsUtils.decrypt(serviceKey), "UTF-8");
 
             UriComponentsBuilder uriBuilder = UriComponentsBuilder
                     .fromUriString(this.getEndPoint())
