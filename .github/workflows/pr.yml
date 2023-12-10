@@ -54,7 +54,7 @@ jobs:
           files: build/test-results/**/*.xml
 
       - name: Send Notification
-        if: ${{ always() }
+        if: ${{ always() }}
         run: |
           if [[ ${{ job.status }} == "success" ]]; then
             MESSAGE="✅ ${{ job.status }} 백엔드 Unit Test 성공: batch-service - by ${{ github.actor }}"
