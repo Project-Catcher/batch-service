@@ -3,6 +3,7 @@ package com.catcher.batch.resource;
 import com.catcher.batch.core.database.CategoryRepository;
 import com.catcher.batch.core.database.LocationRepository;
 import com.catcher.batch.core.domain.entity.Category;
+import com.catcher.batch.datasource.CategoryJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DBConnectionController {
     // TODO : 삭제 예정
-    private final CategoryRepository categoryRepository;
+    private final CategoryJpaRepository categoryRepository;
 
-    @GetMapping("/{categoryName}")
-    public String category(@PathVariable String categoryName) {
-        Category category = categoryRepository.findByName(categoryName).orElse(null);
+    @GetMapping
+    public String category() {
+        Category category = categoryRepository.findById(2L).orElse(null);
 
-        log.info("Category = {}", category.getName());
-
-        return category == null ? "카테고리를 찾을 수 없습니다" : category.getName();
+        return category.getName();
     }
 }
