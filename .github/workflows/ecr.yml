@@ -98,3 +98,17 @@ jobs:
           fi
 
           kustomize build .
+
+      - name: Commit minifest files
+        run: |
+          cd batch-service-kusto
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git commit -am "Update image tag"
+          git push -u origin main
+
+      - name: Sync ArgoCD Application
+        run: |
+          argocd app sync dev-app-batch \
+          --server argocd.dev-alltimecatcher.com \
+          --auth-token ${{ secrets.ARGOCD_TOKEN }} --insecure
