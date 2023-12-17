@@ -21,7 +21,6 @@ public class DBConnectionController {
     private final CategoryJpaRepository categoryRepository;
 
     @GetMapping
-    @Scheduled(fixedDelay = 180000L)
     public String category() {
         Category category = categoryRepository.findById(2L).orElse(null);
 

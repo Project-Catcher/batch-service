@@ -16,7 +16,7 @@ public class CampingController {
 
     private final ApiService apiService;
 
-    @PostMapping("/batch")
+    @GetMapping("/batch")
     public CommonResponse<Object> batchCampingData() {
         apiService.getData();
 
