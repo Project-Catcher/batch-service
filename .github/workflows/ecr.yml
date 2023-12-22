@@ -11,8 +11,6 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   WEBHOOK_URL: ${{ secrets.WEBHOOK }}
   DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'PROD' || 'DEV' }}
-  # ECR_URL: ${{ secrets.ECR_REPO_DEV }}
-  # ROLE_ARN: ${{ secrets.OIDC_ROLE }}
 
 permissions:
   id-token: write
